@@ -1,44 +1,46 @@
-async function submitToDatabase() {
-    // Получаем значения по ID
-    const name = document.getElementById('client_name').value;
-    const weight = document.getElementById('weight_kg').value;
-    const wasteId = document.getElementById('waste_type_id').value;
+async function sendData() {
+    // Получаем значения по ID элементов
+    const nameVal = document.getElementById('client_name').value;
+    const wasteVal = document.getElementById('waste_type_id').value;
+    const weightVal = document.getElementById('weight_kg').value;
 
-    if (!name || !weight) {
-        alert("Заполните все поля!");
+    if (!nameVal || !weightVal) {
+        alert("Заполните имя и вес!");
         return;
     }
 
-    // Формируем JSON в строгом соответствии с OrderCreate в main.py
-    const data = {
-        client_name: String(name),
-        waste_type_id: parseInt(wasteId), // Обязательно целое число
-        weight_kg: parseFloat(weight)     // Обязательно число с запятой
+    // Собираем объект строго по схеме бэкенда
+    const orderData = {
+        client_name: String(nameVal),
+        waste_type_id: parseInt(wasteVal), // Превращаем в целое число (int)
+        weight_kg: parseFloat(weightVal)   // Превращаем в число с точкой (float)
     };
 
-    console.log("Отправка в Render:", data);
+    console.log("Отправка данных:", orderData);
 
     try {
         const response = await fetch('https://ecology-project-do42.onrender.com/send', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: JSON.stringify(orderData)
         });
 
         if (response.ok) {
-            alert("✅ Успех! Проверь pgAdmin.");
+            alert("✅ Данные успешно отправлены в pgAdmin!");
+            // Очистка формы
             document.getElementById('client_name').value = "";
             document.getElementById('weight_kg').value = "";
         } else {
-            const errorDetail = await response.json();
-            console.error("Ошибка 422 детали:", errorDetail);
-            alert("❌ Ошибка 422. Проверь консоль браузера.");
+            const errorText = await response.json();
+            console.error("Детали ошибки 422:", errorText);
+            alert("❌ Ошибка 422: Сервер отклонил данные. Проверь консоль (F12).");
         }
     } catch (e) {
-        console.error("Сбой сети:", e);
-        alert("❌ Сервер недоступен.");
+        console.error("Ошибка сети:", e);
+        alert("❌ Ошибка соединения с сервером Render.");
     }
 }
+
 
 
 
