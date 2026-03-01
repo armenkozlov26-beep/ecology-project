@@ -3,293 +3,288 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G-TRASH | GLOBAL ECOLOGY INFRASTRUCTURE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <title>G-TRASH | Экологическая Инфраструктура Будущего</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
+        /* ПАЛИТРА ИЗ ТВОЕГО ЗАПРОСА */
         :root { 
-            --accent: #28a745; 
-            --bg: #ffffff;
-            --dark: #000000;
-            --gray: #f2f2f2;
-            --border: #e8e8e8;
+            --deep-green: #1b2d1d; /* Темно-зеленый фон как в блоге */
+            --lime: #c9e265;       /* Лаймовый акцент */
+            --white: #ffffff;
+            --soft-gray: #f8f9fa;
+            --black: #0a0a0a;
+            --error: #ff4d4d;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--dark); overflow-x: hidden; line-height: 1.4; }
+        body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--deep-green); line-height: 1.6; }
 
-        /* HEADER & NAVIGATION */
+        /* HEADER С ЭФФЕКТОМ СТЕКЛА */
         nav { 
-            padding: 30px 5%; display: flex; justify-content: space-between; align-items: center; 
-            position: fixed; width: 100%; top: 0; z-index: 9999; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
+            padding: 20px 5%; display: flex; justify-content: space-between; align-items: center; 
+            position: fixed; width: 100%; top: 0; z-index: 9999; 
+            background: rgba(27, 45, 29, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(201, 226, 101, 0.1);
         }
-        .logo { font-weight: 900; font-size: 26px; text-transform: uppercase; letter-spacing: 5px; color: #fff; text-decoration: none; }
-        .logo span { color: var(--accent); }
-        .nav-links a { text-decoration: none; color: #fff; margin-left: 35px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; opacity: 0.5; transition: 0.3s; }
-        .nav-links a:hover { opacity: 1; color: var(--accent); }
+        .logo { font-weight: 900; font-size: 26px; color: var(--lime); text-decoration: none; letter-spacing: 3px; }
+        .nav-links a { color: var(--white); text-decoration: none; margin-left: 30px; font-size: 11px; font-weight: 800; text-transform: uppercase; opacity: 0.6; transition: 0.3s; }
+        .nav-links a:hover { opacity: 1; color: var(--lime); }
 
-        /* HERO SECTION - MASSIVE */
+        /* ГИГАНТСКИЙ HERO-БЛОК */
         header { 
-            height: 100vh; background: var(--dark);
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            text-align: center; color: white; padding: 0 10%;
-            background-image: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=1920&q=80');
-            background-size: cover; background-position: center;
+            height: 100vh; background: var(--deep-green); display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; text-align: center; color: var(--white); padding: 0 10%;
+            background-image: radial-gradient(circle at center, rgba(201, 226, 101, 0.1) 0%, transparent 70%);
         }
-        header h1 { font-size: clamp(50px, 18vw, 200px); font-weight: 900; text-transform: uppercase; line-height: 0.75; margin-bottom: 30px; letter-spacing: -10px; }
-        header p { font-size: clamp(16px, 3vw, 32px); max-width: 1000px; margin-bottom: 60px; opacity: 0.6; font-weight: 300; letter-spacing: -1px; }
-        .btn-tilda { background: var(--accent); color: white; padding: 30px 80px; font-weight: 900; text-transform: uppercase; text-decoration: none; font-size: 16px; letter-spacing: 3px; transition: 0.5s; border: none; cursor: pointer; }
-        .btn-tilda:hover { background: #fff; color: #000; transform: scale(1.05); }
+        header h1 { font-size: clamp(60px, 15vw, 180px); font-weight: 900; line-height: 0.75; margin-bottom: 20px; color: var(--lime); letter-spacing: -5px; }
+        header p { font-size: clamp(18px, 2.5vw, 32px); max-width: 900px; margin-bottom: 50px; font-weight: 300; opacity: 0.9; }
+        
+        .btn-lime { 
+            background: var(--lime); color: var(--deep-green); padding: 25px 70px; 
+            font-weight: 900; text-transform: uppercase; text-decoration: none; 
+            border-radius: 100px; transition: 0.5s cubic-bezier(0.2, 1, 0.3, 1); border: none; cursor: pointer; 
+        }
+        .btn-lime:hover { transform: scale(1.05) translateY(-5px); box-shadow: 0 20px 40px rgba(201, 226, 101, 0.3); }
 
-        /* STATISTICS BAR */
-        .stats-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); background: #fff; color: #000; padding: 120px 10%; gap: 80px; border-bottom: 1px solid var(--border); }
-        .stat-box h2 { font-size: 90px; font-weight: 900; line-height: 1; letter-spacing: -5px; }
-        .stat-box p { font-size: 12px; text-transform: uppercase; font-weight: 900; letter-spacing: 2px; margin-top: 15px; opacity: 0.4; }
+        /* БЛОК ЦИФР */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); background: var(--black); padding: 100px 10%; gap: 60px; }
+        .stat-card { text-align: left; border-left: 1px solid rgba(201, 226, 101, 0.3); padding-left: 30px; }
+        .stat-card h2 { font-size: 72px; font-weight: 900; color: var(--lime); line-height: 1; }
+        .stat-card p { color: var(--white); text-transform: uppercase; font-size: 12px; letter-spacing: 2px; opacity: 0.5; margin-top: 10px; }
 
-        /* TEXT CONTENT BLOCKS (LIKE MUSOR-MSK) */
-        .content-section { padding: 150px 10%; background: #fff; }
-        .content-section h2 { font-size: clamp(40px, 8vw, 80px); font-weight: 900; text-transform: uppercase; line-height: 0.9; margin-bottom: 80px; letter-spacing: -3px; }
-        .text-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 100px; }
-        .text-columns p { font-size: 18px; line-height: 1.8; color: #333; margin-bottom: 30px; }
-        .accent-text { color: var(--accent); font-weight: 900; }
+        /* РАЗДЕЛ "ФИШКИ" (КАК НА СКРИНШОТЕ) */
+        .features { padding: 150px 10%; background: var(--white); }
+        .feature-title { font-size: 64px; font-weight: 900; text-transform: uppercase; margin-bottom: 80px; text-align: center; }
+        .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+        .feature-item { padding: 50px; border-radius: 40px; background: var(--soft-gray); transition: 0.4s; }
+        .feature-item:hover { background: var(--deep-green); color: var(--white); }
+        .feature-item h3 { font-size: 28px; margin-bottom: 20px; }
 
-        /* SERVICES - CARDS */
-        .services-section { padding: 150px 10%; background: var(--gray); }
-        .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2px; background: var(--border); border: 2px solid var(--border); }
-        .service-item { background: #fff; padding: 60px; transition: 0.4s; }
-        .service-item:hover { background: var(--accent); color: #fff; }
-        .service-item h3 { font-size: 32px; font-weight: 900; text-transform: uppercase; margin-bottom: 25px; }
-        .service-item p { font-size: 16px; opacity: 0.7; margin-bottom: 40px; }
+        /* БЛОК БЛОГА (СТИЛЬ TILDA) */
+        .blog { padding: 150px 10%; background: var(--deep-green); color: var(--white); }
+        .blog-header { text-align: center; max-width: 800px; margin: 0 auto 100px; }
+        .blog-header h2 { font-size: 56px; margin-bottom: 30px; font-weight: 400; }
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; }
+        .blog-card { border-radius: 35px; overflow: hidden; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); transition: 0.5s; }
+        .blog-card:hover { transform: scale(1.02); background: rgba(255,255,255,0.07); }
+        .blog-img { height: 300px; background-size: cover; background-position: center; transition: 0.5s; }
+        .blog-card:hover .blog-img { filter: saturate(1.2); }
+        .blog-info { padding: 40px; }
+        .blog-info h3 { font-size: 26px; color: var(--lime); margin-bottom: 20px; }
 
-        /* FORM SECTION - THE BIG ONE */
-        .form-section { padding: 150px 10%; background: var(--dark); color: #fff; }
-        .form-wrap { max-width: 900px; margin: 0 auto; }
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 60px; }
-        .input-group { position: relative; margin-bottom: 60px; }
-        .input-group input, .input-group select { width: 100%; background: transparent; border: none; border-bottom: 2px solid #333; padding: 20px 0; color: #fff; font-size: 24px; font-family: inherit; font-weight: 700; transition: 0.3s; }
-        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--accent); }
-        .input-group label { position: absolute; top: -15px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; color: var(--accent); }
+        /* ФОРМА (ИСПРАВЛЕННАЯ ЛОГИКА) */
+        .form-section { padding: 150px 10%; background: var(--soft-gray); display: flex; justify-content: center; }
+        .form-container { width: 100%; max-width: 700px; background: var(--white); padding: 80px; border-radius: 50px; box-shadow: 0 50px 100px rgba(0,0,0,0.05); }
+        .form-container h2 { font-size: 42px; font-weight: 900; margin-bottom: 50px; text-align: center; }
+        
+        .input-group { margin-bottom: 35px; }
+        .input-group label { display: block; font-size: 11px; font-weight: 900; text-transform: uppercase; margin-bottom: 12px; color: #888; }
+        .input-group input, .input-group select { 
+            width: 100%; padding: 22px; border: 2px solid #eee; border-radius: 20px; 
+            font-size: 18px; font-family: inherit; transition: 0.3s; background: #fafafa;
+        }
+        .input-group input:focus { outline: none; border-color: var(--lime); background: #fff; }
 
-        /* FAQ ACCORDION */
-        .faq-section { padding: 150px 10%; background: #fff; }
-        .faq-item { border-bottom: 1px solid var(--border); padding: 40px 0; cursor: pointer; }
-        .faq-q { font-size: 24px; font-weight: 900; text-transform: uppercase; display: flex; justify-content: space-between; }
-        .faq-a { max-height: 0; overflow: hidden; transition: 0.5s; opacity: 0; font-size: 18px; padding-top: 0; color: #666; }
-        .faq-item.active .faq-a { max-height: 200px; opacity: 1; padding-top: 30px; }
-
-        /* LICENSES BLOCK */
-        .license-section { padding: 100px 10%; background: var(--gray); text-align: center; }
-        .license-grid { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 50px; opacity: 0.4; }
-        .license-item { width: 150px; height: 200px; background: #fff; border: 1px solid #ddd; padding: 10px; font-size: 8px; font-weight: 900; text-transform: uppercase; }
-
-        /* MAP DARK */
-        #map { height: 800px; width: 100%; filter: grayscale(1) invert(1) contrast(1.2); }
+        /* КАРТА */
+        .map-section { background: var(--black); padding-top: 100px; }
+        #map { height: 750px; width: 100%; filter: grayscale(1) invert(0.9) contrast(1.1); }
 
         /* FOOTER */
-        footer { padding: 150px 10% 80px; background: #000; color: #fff; }
-        .footer-cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 80px; }
-        .footer-logo { font-size: 40px; font-weight: 900; letter-spacing: 5px; margin-bottom: 30px; }
-        .footer-link { display: block; color: #fff; text-decoration: none; opacity: 0.4; margin-bottom: 20px; font-size: 14px; text-transform: uppercase; font-weight: 700; transition: 0.3s; }
-        .footer-link:hover { opacity: 1; color: var(--accent); }
+        footer { padding: 120px 10% 60px; background: var(--deep-green); color: var(--white); }
+        .footer-content { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 100px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 80px; }
+        .footer-logo { font-size: 36px; font-weight: 900; color: var(--lime); margin-bottom: 30px; }
 
-        .status-box { position: fixed; bottom: 40px; right: 40px; padding: 30px 50px; background: #fff; color: #000; font-weight: 900; text-transform: uppercase; z-index: 10000; display: none; box-shadow: 0 30px 60px rgba(0,0,0,0.5); }
+        /* УВЕДОМЛЕНИЯ */
+        .status-toast { 
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); 
+            padding: 25px 50px; border-radius: 100px; color: #fff; font-weight: 800; 
+            z-index: 10000; display: none; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
 
         @media (max-width: 1000px) {
-            .form-grid, .footer-cols { grid-template-columns: 1fr; }
-            header h1 { font-size: 80px; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .footer-content { grid-template-columns: 1fr; gap: 50px; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="#" class="logo">G-<span>TRASH</span></a>
+        <a href="#" class="logo">G-TRASH</a>
         <div class="nav-links">
-            <a href="#about">Экспертиза</a>
-            <a href="#services">Услуги</a>
+            <a href="#features">Преимущества</a>
+            <a href="#blog">Эко-блог</a>
             <a href="#form">Заявка</a>
-            <a href="#faq">Инфо</a>
             <a href="#map">Карта</a>
         </div>
     </nav>
 
     <header>
-        <p>FEDERAL WASTE OPERATOR</p>
-        <h1>SYSTEM<br>OF CLEAN</h1>
-        <a href="#form" class="btn-tilda">ОСТАВИТЬ ЗАЯВКУ</a>
+        <h1>ECO<br>SYSTEM</h1>
+        <p>Мы создаем инфраструктуру, где отходы становятся ресурсом. Интеллектуальный сбор и переработка 24/7.</p>
+        <a href="#form" class="btn-lime">ОФОРМИТЬ ВЫВОЗ</a>
     </header>
 
-    <div class="stats-section">
-        <div class="stat-box"><h2>12</h2><p>ЛЕТ В ИНДУСТРИИ</p></div>
-        <div class="stat-box"><h2>850</h2><p>СПЕЦТЕХНИКИ В ПАРКЕ</p></div>
-        <div class="stat-box"><h2>1.5M</h2><p>ТОНН ВТОРСЫРЬЯ</p></div>
-    </div>
+    <section class="stats-grid">
+        <div class="stat-card"><h2>15k</h2><p>Тонн переработано</p></div>
+        <div class="stat-card"><h2>850</h2><p>Пунктов приема</p></div>
+        <div class="stat-card"><h2>5402</h2><p>Спецтехники</p></div>
+        <div class="stat-card"><h2>24/7</h2><p>Поддержка</p></div>
+    </section>
 
-    <section id="about" class="content-section">
-        <h2>МЫ ТРАНСФОРМИРУЕМ<br>ПОНЯТИЕ ОТХОДОВ</h2>
-        <div class="text-columns">
-            <div>
-                <p>Современный мегаполис производит миллионы тонн мусора ежедневно. G-TRASH внедряет <span class="accent-text">AI-алгоритмы</span> для управления логистикой сбора, что позволяет нам сократить время подачи машины до 45 минут в любой точке Москвы.</p>
-                <p>Мы работаем напрямую с крупнейшими перерабатывающими заводами России, обеспечивая <span class="accent-text">замкнутый цикл</span> производства. Каждая пластиковая бутылка, попавшая в наш контейнер, превращается в новую упаковку или одежду.</p>
+    <section id="features" class="features">
+        <h2 class="feature-title">Почему выбирают нас</h2>
+        <div class="feature-grid">
+            <div class="feature-item">
+                <h3>Скорость</h3>
+                <p>Подача машины в течение 45 минут после оформления заявки в личном кабинете.</p>
             </div>
-            <div>
-                <p>Наш подход базируется на трех столпах: прозрачность отчетности, экологическая безопасность и экономическая эффективность для вашего бизнеса. Мы предоставляем полные <span class="accent-text">GPS-треки</span> перемещения ваших отходов до места утилизации.</p>
-                <p>G-TRASH — это не просто вывоз мусора. Это цифровая платформа, которая делает экологию выгодной. Присоединяйтесь к тысячам компаний, которые уже выбрали чистое будущее.</p>
+            <div class="feature-item">
+                <h3>Прозрачность</h3>
+                <p>Следите за весом и перемещением ваших отходов в режиме реального времени через GPS.</p>
+            </div>
+            <div class="feature-item">
+                <h3>Экология</h3>
+                <p>Мы гарантируем, что 95% собранного сырья попадет на переработку, а не на полигон.</p>
             </div>
         </div>
     </section>
 
-    <section id="services" class="services-section">
-        <h2 style="font-size: 60px; font-weight: 900; text-transform: uppercase; margin-bottom: 80px;">НАПРАВЛЕНИЯ РАБОТЫ</h2>
-        <div class="services-grid">
-            <div class="service-item"><h3>ПРОМЗОНЫ</h3><p>Комплексное обслуживание заводов и складов. Контейнеры 27-32 м³.</p></div>
-            <div class="service-item"><h3>РИТЕЙЛ</h3><p>Сбор картона, пленки и пластика. Вывоз по кнопке наполнения.</p></div>
-            <div class="service-item"><h3>СТРОЙКА</h3><p>Вывоз грунта и КГМ. Все закрывающие документы ОССиГ.</p></div>
-            <div class="service-item"><h3>IT-ОТХОДЫ</h3><p>Утилизация серверного оборудования и оргтехники с актами списания.</p></div>
+    <section id="blog" class="blog">
+        <div class="blog-header">
+            <h2>Блог и Новости</h2>
+            <p>Статьи о переработке мусора, экологических инициативах и полезных советах по утилизации отходов.</p>
+        </div>
+        <div class="blog-grid">
+            <div class="blog-card">
+                <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=800&q=80');"></div>
+                <div class="blog-info">
+                    <h3>Мифы о пластике</h3>
+                    <p>Разбираемся, какой пластик действительно можно переработать бесконечное количество раз.</p>
+                </div>
+            </div>
+            <div class="blog-card">
+                <div class="blog-img" style="background-image: url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80');"></div>
+                <div class="blog-info">
+                    <h3>Эко-офис 2026</h3>
+                    <p>Как крупный бизнес в Москве переходит на Zero Waste и экономит на этом миллионы.</p>
+                </div>
+            </div>
         </div>
     </section>
 
     <section id="form" class="form-section">
-        <div class="form-wrap">
-            <h2 style="font-size: 60px; font-weight: 900; text-transform: uppercase;">ЗАПУСТИТЬ СБОР</h2>
-            <div class="form-grid">
-                <div class="input-group">
-                    <label>ВАШЕ ИМЯ / КОМПАНИЯ</label>
-                    <input type="text" id="name" placeholder="Иванов Иван">
-                </div>
-                <div class="input-group">
-                    <label>КАТЕГОРИЯ СЫРЬЯ</label>
-                    <select id="waste_id">
-                        <option value="1">БУМАГА И КАРТОН</option>
-                        <option value="2">ПЛАСТИК / ПЭТ</option>
-                        <option value="3">МЕТАЛЛОЛОМ</option>
-                        <option value="4">СТЕКЛОБОЙ</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label>ВЕС ПАРТИИ (КГ)</label>
-                    <input type="number" id="weight" placeholder="0.00">
-                </div>
-                <div class="input-group">
-                    <label>ГОРОД ОТПРАВКИ</label>
-                    <input type="text" value="МОСКВА" readonly>
-                </div>
+        <div class="form-container">
+            <h2>Оставить заявку</h2>
+            <div class="input-group">
+                <label>Ваше имя</label>
+                <input type="text" id="client_name" placeholder="Напр: Константин">
             </div>
-            <button class="btn-tilda" onclick="sendToDB()" style="width: 100%; margin-top: 40px;">ОТПРАВИТЬ ДАННЫЕ В БАЗУ</button>
+            <div class="input-group">
+                <label>Категория отходов (ID)</label>
+                <select id="waste_type_id">
+                    <option value="1">Бумага и Картон (ID: 1)</option>
+                    <option value="2">Пластик (ID: 2)</option>
+                    <option value="3">Металл (ID: 3)</option>
+                    <option value="4">Стекло (ID: 4)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Объем сырья (кг)</label>
+                <input type="number" id="weight_kg" placeholder="Напр: 122">
+            </div>
+            <button class="btn-lime" style="width: 100%;" onclick="submitToDatabase()">ОТПРАВИТЬ В PGADMIN</button>
         </div>
     </section>
 
-    <section id="faq" class="faq-section">
-        <h2 style="font-size: 60px; font-weight: 900; margin-bottom: 60px;">FAQ</h2>
-        <div class="faq-item" onclick="this.classList.toggle('active')">
-            <div class="faq-q">КАК ОФОРМИТЬ ДОГОВОР? <span>+</span></div>
-            <div class="faq-a">Вы оставляете заявку, наш менеджер присылает типовой договор через ЭДО (Диадок/СБИС) в течение 15 минут.</div>
-        </div>
-        <div class="faq-item" onclick="this.classList.toggle('active')">
-            <div class="faq-q">ЕСТЬ ЛИ У ВАС ЛИЦЕНЗИЯ? <span>+</span></div>
-            <div class="faq-a">Да, мы обладаем бессрочной лицензией на сбор, транспортировку и утилизацию отходов I-IV классов опасности.</div>
-        </div>
-        <div class="faq-item" onclick="this.classList.toggle('active')">
-            <div class="faq-q">ГДЕ НАХОДИТСЯ ВАШ ПОЛИГОН? <span>+</span></div>
-            <div class="faq-a">Мы не используем полигоны для захоронения. Вся продукция поступает на наши КПО (Комплексы Переработки Отходов).</div>
-        </div>
-    </section>
-
-    <section class="license-section">
-        <h3 style="font-weight: 900; letter-spacing: 5px;">СЕРТИФИКАЦИЯ И ПРАВО</h3>
-        <div class="license-grid">
-            <div class="license-item">ISO 14001<br>ENVIRONMENT</div>
-            <div class="license-item">ЛИЦЕНЗИЯ<br>№077-1442</div>
-            <div class="license-item">ГОСТ Р<br>56020-2014</div>
-            <div class="license-item">GREEN CO<br>COMPLIANCE</div>
-        </div>
-    </section>
-
-    <div id="map"></div>
+    <div class="map-section">
+        <div id="map"></div>
+    </div>
 
     <footer>
-        <div class="footer-cols">
+        <div class="footer-content">
             <div>
                 <div class="footer-logo">G-TRASH</div>
-                <p style="opacity: 0.3; font-size: 11px;">DIGITAL ECOLOGY PLATFORM V 2.0.26</p>
+                <p style="opacity: 0.5; max-width: 400px;">Федеральный оператор по обращению с отходами. Лицензия №077-442. Работаем для чистого будущего России.</p>
             </div>
             <div>
-                <h4 style="margin-bottom: 30px; font-size: 10px; letter-spacing: 2px;">УСЛУГИ</h4>
-                <a href="#" class="footer-link">ВЫВОЗ ТКО</a>
-                <a href="#" class="footer-link">УТИЛИЗАЦИЯ</a>
-                <a href="#" class="footer-link">КОНСАЛТИНГ</a>
+                <h4 style="margin-bottom: 25px; font-size: 12px; letter-spacing: 2px;">РАЗДЕЛЫ</h4>
+                <p style="margin-bottom: 15px; opacity: 0.6;">О компании</p>
+                <p style="margin-bottom: 15px; opacity: 0.6;">Технологии</p>
+                <p style="margin-bottom: 15px; opacity: 0.6;">Карьера</p>
             </div>
             <div>
-                <h4 style="margin-bottom: 30px; font-size: 10px; letter-spacing: 2px;">ОФИС</h4>
-                <p style="opacity: 0.4; font-size: 14px;">МОСКВА-СИТИ<br>БАШНЯ ВОСТОК</p>
-            </div>
-            <div>
-                <h4 style="margin-bottom: 30px; font-size: 10px; letter-spacing: 2px;">КОНТАКТЫ</h4>
-                <p style="font-weight: 900;">8 800 700 20 20</p>
-                <p style="opacity: 0.4;">GO@G-TRASH.RU</p>
+                <h4 style="margin-bottom: 25px; font-size: 12px; letter-spacing: 2px;">СВЯЗЬ</h4>
+                <p style="font-weight: 800; font-size: 20px; color: var(--lime);">8 800 700 20 20</p>
+                <p style="opacity: 0.6; margin-top: 10px;">info@g-trash.ru</p>
             </div>
         </div>
+        <p style="margin-top: 60px; opacity: 0.2; font-size: 10px; text-align: center; letter-spacing: 5px;">© 2026 G-TRASH DIGITAL ECOSYSTEM</p>
     </footer>
 
-    <div id="status" class="status-box"></div>
+    <div id="toast" class="status-toast"></div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // DARK MAP INITIALIZATION
-        var map = L.map('map', { scrollWheelZoom: false }).setView([55.75, 37.62], 12);
+        // ИНИЦИАЛИЗАЦИЯ КАРТЫ
+        var map = L.map('map', { scrollWheelZoom: false }).setView([55.75, 37.62], 11);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        L.marker([55.75, 37.62]).addTo(map).bindPopup("G-TRASH HQ");
+        L.marker([55.75, 37.62]).addTo(map).bindPopup("<b>G-TRASH HQ</b><br>Центр управления");
 
-        // DATA SENDING - FIXING 422 ERROR
-        async function sendToDB() {
-            const name = document.getElementById('name').value;
-            const weight = document.getElementById('weight').value;
-            const wasteId = document.getElementById('waste_id').value;
-            const statusBox = document.getElementById('status');
+        // ГЛАВНАЯ ФУНКЦИЯ (ИСПРАВЛЯЕТ ОШИБКУ 422)
+        async function submitToDatabase() {
+            const name = document.getElementById('client_name').value;
+            const weight = document.getElementById('weight_kg').value;
+            const wasteId = document.getElementById('waste_type_id').value;
 
             if (!name || !weight) {
-                showMsg("ЗАПОЛНИТЕ ВСЕ ПОЛЯ", "#ff0000");
+                notify("Заполните все поля!", "#ff4d4d");
                 return;
             }
 
-            showMsg("ОБРАБОТКА ШЛЮЗА...", "#ffaa00");
+            notify("Синхронизация с сервером...", "#f39c12");
 
             try {
-                // ОТПРАВЛЯЕМ ТЕ ПОЛЯ, КОТОРЫЕ ВИДИМ В PGADMIN
+                // ВАЖНО: Имена полей должны СТРОГО совпадать с твоей моделью в FastAPI
+                const payload = { 
+                    client_name: name, 
+                    weight_kg: parseFloat(weight),
+                    waste_type_id: parseInt(wasteId) // Обязательное поле для БД
+                };
+
                 const response = await fetch('https://ecology-project-do42.onrender.com/send', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        client_name: name, 
-                        weight_kg: parseFloat(weight),
-                        waste_type_id: parseInt(wasteId) // Добавили ID, чтобы не было 422!
-                    })
+                    body: JSON.stringify(payload)
                 });
 
                 if (response.ok) {
-                    showMsg("ДАННЫЕ В БАЗЕ (POSTGRES)", "#28a745");
-                    document.getElementById('name').value = "";
-                    document.getElementById('weight').value = "";
+                    notify("✅ Успех! Запись в pgAdmin добавлена", "#27ae60");
+                    document.getElementById('client_name').value = "";
+                    document.getElementById('weight_kg').value = "";
                 } else {
-                    const errorDetails = await response.json();
-                    console.error("422 Details:", errorDetails);
-                    showMsg("ОШИБКА 422: ПРОВЕРЬТЕ PGADMIN", "#ff0000");
+                    const errorMsg = await response.json();
+                    console.error("Детали ошибки 422:", errorMsg);
+                    notify("❌ Ошибка 422: Проверь консоль браузера", "#ff4d4d");
                 }
             } catch (e) {
-                showMsg("СЕТЕВАЯ ОШИБКА", "#ff0000");
+                notify("❌ Ошибка сети: Сервер Render спит", "#ff4d4d");
             }
         }
 
-        function showMsg(text, color) {
-            const sb = document.getElementById('status');
-            sb.style.display = "block";
-            sb.innerText = text;
-            sb.style.borderTop = "10px solid " + color;
-            setTimeout(() => { sb.style.display = "none"; }, 5000);
+        function notify(text, color) {
+            const toast = document.getElementById('toast');
+            toast.style.display = "block";
+            toast.style.background = color;
+            toast.innerText = text;
+            setTimeout(() => { toast.style.display = "none"; }, 5000);
         }
     </script>
 </body>
 </html>
+
 
 
 
