@@ -3,149 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G-TRASH | Эко-система будущего</title>
+    <title>G-TRASH | Цифровая Экология</title>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
         :root { 
             --accent: #00c853; 
-            --dark: #1a1c1a; 
-            --glass: rgba(255, 255, 255, 0.85);
+            --accent-hover: #00e676;
+            --dark: #121412; 
+            --glass: rgba(255, 255, 255, 0.9);
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
-        body { font-family: 'Manrope', sans-serif; background: #f0f4f0; color: var(--dark); overflow-x: hidden; }
+        body { font-family: 'Manrope', sans-serif; background: #f8faf8; color: var(--dark); line-height: 1.6; }
 
-        /* Навигация с эффектом размытия */
+        /* Навигация */
         nav { 
             background: rgba(255, 255, 255, 0.8); 
-            backdrop-filter: blur(15px);
-            padding: 15px 8%; 
+            backdrop-filter: blur(20px);
+            padding: 20px 8%; 
             display: flex; justify-content: space-between; align-items: center; 
             position: fixed; width: 100%; top: 0; z-index: 1000; 
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .logo { font-weight: 800; color: var(--dark); font-size: 24px; letter-spacing: -1px; }
+        .logo { font-weight: 800; font-size: 26px; letter-spacing: -1px; }
         .logo span { color: var(--accent); }
-        nav .links a { text-decoration: none; color: var(--dark); margin-left: 25px; font-size: 13px; font-weight: 600; transition: 0.3s; opacity: 0.7; }
-        nav .links a:hover { opacity: 1; color: var(--accent); }
+        .nav-links a { text-decoration: none; color: var(--dark); margin-left: 30px; font-size: 14px; font-weight: 700; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent); }
 
-        /* Главный экран */
+        /* Герой-блок (Увеличили высоту) */
         header { 
-            height: 90vh; 
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1600&q=80');
+            height: 100vh; 
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=1920&q=80');
             background-size: cover; background-position: center;
             display: flex; flex-direction: column; justify-content: center; align-items: center; 
             text-align: center; color: white; padding: 0 20px;
         }
-        header h1 { font-size: clamp(32px, 5vw, 64px); line-height: 1.1; margin-bottom: 20px; font-weight: 800; }
-        header p { font-size: 18px; max-width: 600px; opacity: 0.9; }
+        header h1 { font-size: clamp(40px, 8vw, 90px); font-weight: 800; margin-bottom: 25px; line-height: 1; }
+        header p { font-size: 20px; max-width: 700px; opacity: 0.9; margin-bottom: 30px; }
 
-        /* Секция с формой */
-        .section-form { 
-            padding: 100px 5%; 
-            background: #f0f4f0;
-            position: relative;
-        }
-        .form-glass { 
-            background: var(--glass); 
-            backdrop-filter: blur(20px);
-            padding: 40px; 
-            border-radius: 30px; 
-            max-width: 500px; 
-            margin: -150px auto 40px; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.4);
-            position: relative; z-index: 10;
+        /* Секция статистики (Новое!) */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 40px 8%;
+            background: var(--dark);
+            color: white;
             text-align: center;
         }
+        .stat-item h2 { color: var(--accent); font-size: 36px; }
+
+        /* Форма (Улучшили Glassmorphism) */
+        .request-section { padding: 120px 5%; background: #f0f4f0; }
+        .form-glass { 
+            background: var(--glass); 
+            backdrop-filter: blur(25px);
+            padding: 60px; 
+            border-radius: 40px; 
+            max-width: 600px; 
+            margin: -200px auto 0; 
+            box-shadow: 0 40px 80px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.5);
+            position: relative; z-index: 10;
+        }
         
-        .form-glass h2 { font-weight: 800; font-size: 26px; margin-bottom: 10px; }
-        
-        .input-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: #666; }
+        .input-group { margin-bottom: 25px; text-align: left; }
+        label { display: block; font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; color: #555; }
         input, select { 
-            width: 100%; padding: 14px; border: 2px solid #eef0ee; border-radius: 12px; 
-            font-family: inherit; font-weight: 600; transition: 0.3s; background: white;
+            width: 100%; padding: 18px; border: 2px solid #e0e6e0; border-radius: 15px; 
+            font-family: inherit; font-weight: 600; transition: 0.3s;
         }
-        input:focus { border-color: var(--accent); outline: none; }
+        input:focus { border-color: var(--accent); outline: none; background: #fff; }
 
-        .btn-main { 
-            background: var(--dark); color: white; border: none; padding: 18px; 
-            border-radius: 12px; cursor: pointer; font-weight: 800; width: 100%; 
-            font-size: 16px; transition: 0.4s;
+        .btn-send { 
+            background: var(--accent); color: white; border: none; padding: 22px; 
+            border-radius: 15px; cursor: pointer; font-weight: 800; width: 100%; 
+            font-size: 18px; transition: 0.4s;
         }
-        .btn-main:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 200, 83, 0.2); }
+        .btn-send:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0, 200, 83, 0.4); }
 
-        /* Карта */
-        #map { height: 500px; width: 100%; border-radius: 20px; filter: grayscale(0.1); margin: 40px 0; }
+        /* Секция обучения (Новое!) */
+        .guide-section { padding: 100px 8%; background: white; }
+        .guide-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 50px; }
+        .guide-card { padding: 40px; border-radius: 30px; background: #f9fbf9; border: 1px solid #eee; transition: 0.3s; }
+        .guide-card:hover { border-color: var(--accent); background: #fff; }
+        .guide-card .icon { font-size: 40px; margin-bottom: 20px; display: block; }
 
-        /* Футер */
-        footer { background: var(--dark); color: white; padding: 60px 8% 30px; }
-        .status-msg { font-weight: 700; font-size: 14px; margin-top: 15px; display: none; }
+        /* Карта (Вернули точки) */
+        .map-header { text-align: center; padding: 80px 8% 40px; background: #f0f4f0; }
+        #map { height: 650px; width: 100%; border-top: 5px solid var(--accent); }
+
+        footer { background: var(--dark); color: white; padding: 100px 8% 50px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 60px; }
+        .status-msg { margin-top: 20px; font-weight: 800; border-radius: 10px; padding: 15px; display: none; }
     </style>
 </head>
 <body>
 
     <nav>
         <div class="logo">G-<span>TRASH</span></div>
-        <div class="links">
-            <a href="#request">ОСТАВИТЬ ЗАЯВКУ</a>
-            <a href="#map">КАРТА ТОЧЕК</a>
+        <div class="nav-links">
+            <a href="#guide">ИНСТРУКЦИЯ</a>
+            <a href="#request">ЗАЯВКА</a>
+            <a href="#map-box">КАРТА</a>
         </div>
     </nav>
 
     <header>
-        <h1>Сделаем мир <br>чище вместе</h1>
-        <p>Удобный сервис по вывозу и переработке отходов в вашем городе.</p>
+        <h1>Чистая планета <br>начинается с тебя</h1>
+        <p>G-Trash — это высокотехнологичный сервис вывоза вторсырья. Мы превращаем ваш мусор в ресурсы за 60 минут.</p>
+        <a href="#request" style="background: var(--accent); color: white; padding: 20px 40px; border-radius: 50px; text-decoration: none; font-weight: 800; transition: 0.3s;">НАЧАТЬ СОРТИРОВКУ</a>
     </header>
 
-    <section id="request" class="section-form">
+    <div class="stats-bar">
+        <div class="stat-item"><h2>1284</h2><p>Тонн переработано</p></div>
+        <div class="stat-item"><h2>5402</h2><p>Активных заявок</p></div>
+        <div class="stat-item"><h2>15к</h2><p>Спасенных деревьев</p></div>
+        <div class="stat-item"><h2>850</h2><p>Пунктов приема</p></div>
+    </div>
+
+    <section id="request" class="request-section">
         <div class="form-glass">
-            <h2>Оставить заявку</h2>
-            <p style="margin-bottom: 25px; opacity: 0.7;">Менеджер свяжется с вами для уточнения деталей</p>
+            <h2 style="margin-bottom: 10px;">Онлайн-заявка</h2>
+            <p style="opacity: 0.6; margin-bottom: 35px;">Наш алгоритм автоматически подберет ближайшего курьера</p>
             
             <div class="input-group">
                 <label>Ваше Имя</label>
-                <input type="text" id="name" placeholder="Введите имя">
+                <input type="text" id="name" placeholder="Константин">
             </div>
 
             <div class="input-group">
-                <label>Что сдаем?</label>
+                <label>Категория отходов</label>
                 <select id="waste-type">
-                    <option value="plastic">Пластик</option>
-                    <option value="paper">Макулатура</option>
-                    <option value="glass">Стекло</option>
-                    <option value="metal">Металл</option>
+                    <option value="plastic">Пластик (ПЭТ, ПНД)</option>
+                    <option value="paper">Бумага и Картон</option>
+                    <option value="glass">Стеклотара</option>
+                    <option value="metal">Алюминиевые банки</option>
+                    <option value="dangerous">Батарейки / Лампы</option>
                 </select>
             </div>
 
             <div class="input-group">
-                <label>Примерный вес (кг)</label>
-                <input type="number" id="weight" placeholder="Например: 10">
+                <label>Объем сырья (кг)</label>
+                <input type="number" id="weight" placeholder="Например: 5">
             </div>
 
-            <button class="btn-main" onclick="sendData()">ОТПРАВИТЬ ДАННЫЕ</button>
+            <button class="btn-send" onclick="sendData()">ВЫЗВАТЬ КУРЬЕРА</button>
             <div id="status" class="status-msg"></div>
         </div>
-
-        <div id="map"></div>
     </section>
 
+    <section id="guide" class="guide-section">
+        <h2 style="font-size: 36px; text-align: center;">Как подготовить сырье?</h2>
+        <div class="guide-grid">
+            <div class="guide-card">
+                <span class="icon">🚿</span>
+                <h3>Ополосните</h3>
+                <p>Пищевые остатки мешают переработке. Просто сполосните тару водой перед сдачей.</p>
+            </div>
+            <div class="guide-card">
+                <span class="icon">📉</span>
+                <h3>Сожмите</h3>
+                <p>Спрессованный пластик и картон занимают в 5 раз меньше места в нашей логистике.</p>
+            </div>
+            <div class="guide-card">
+                <span class="icon">🏷️</span>
+                <h3>Проверьте маркировку</h3>
+                <p>Ищите треугольник с цифрами 1, 2, 4, 5 — это самое востребованное сырье.</p>
+            </div>
+        </div>
+    </section>
+
+    <div id="map-box" class="map-header">
+        <h2>География G-TRASH</h2>
+        <p>Мы работаем в крупнейших городах России</p>
+    </div>
+    <div id="map"></div>
+
     <footer>
-        <div style="text-align: center; opacity: 0.5; font-size: 12px;">
-            &copy; 2026 G-TRASH Digital. Проект Эко-Портал.
+        <div class="footer-grid">
+            <div>
+                <h2 style="margin-bottom: 20px; color: var(--accent);">G-TRASH PRO</h2>
+                <p style="opacity: 0.6;">Инновационные решения для управления отходами. Мы создаем будущее, в котором нет свалок.</p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 20px;">Контакты</h4>
+                <p style="opacity: 0.6;">8 (800) 700-20-26</p>
+                <p style="opacity: 0.6;">support@g-trash.ru</p>
+                <p style="opacity: 0.6;">Москва, Сколково, стр. 4</p>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 20px;">Сообщество</h4>
+                <p style="opacity: 0.6;">Telegram-бот</p>
+                <p style="opacity: 0.6;">VK Экология</p>
+            </div>
+        </div>
+        <div style="margin-top: 80px; text-align: center; opacity: 0.3; font-size: 12px; border-top: 1px solid #333; padding-top: 30px;">
+            &copy; 2026 G-TRASH Digital Systems. Лицензия №ЭКО-1442.
         </div>
     </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Инициализация карты
-        var map = L.map('map').setView([55.75, 37.61], 4);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        L.marker([55.75, 37.61]).addTo(map).bindPopup("Москва: Пункт приема активен");
+        // Инициализация карты с качественным слоем
+        var map = L.map('map', { scrollWheelZoom: false }).setView([55.75, 37.61], 4);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
-        // Функция отправки
+        // Расширенные точки
+        var points = [
+            {lat: 55.75, lon: 37.61, city: "Москва (Главный хаб)", color: "#00c853"},
+            {lat: 59.93, lon: 30.33, city: "Санкт-Петербург", color: "#00c853"},
+            {lat: 55.00, lon: 82.93, city: "Новосибирск", color: "#00c853"},
+            {lat: 56.83, lon: 60.60, city: "Екатеринбург", color: "#00c853"},
+            {lat: 45.03, lon: 38.97, city: "Краснодар", color: "#00c853"},
+            {lat: 55.78, lon: 49.12, city: "Казань", color: "#00c853"},
+            {lat: 43.11, lon: 131.88, city: "Владивосток", color: "#00c853"}
+        ];
+
+        points.forEach(p => {
+            L.circleMarker([p.lat, p.lon], {
+                radius: 10,
+                fillColor: p.color,
+                color: "#fff",
+                weight: 3,
+                fillOpacity: 0.9
+            }).addTo(map).bindPopup("<b>" + p.city + "</b><br>Пункт приёма активен 24/7");
+        });
+
+        // Отправка данных
         async function sendData() {
             const name = document.getElementById('name').value;
             const weight = document.getElementById('weight').value;
@@ -153,40 +239,44 @@
             const statusDiv = document.getElementById('status');
 
             if (!name || !weight) {
-                statusDiv.style.display = "block";
-                statusDiv.innerText = "❌ Заполните все поля";
-                statusDiv.style.color = "#ff5252";
+                showStatus("❌ Заполните анкету полностью", "#ff5252");
                 return;
             }
 
-            statusDiv.style.display = "block";
-            statusDiv.innerText = "⏳ Отправка в базу...";
-            statusDiv.style.color = "#ffa000";
+            showStatus("⏳ Обработка в G-TRASH Cloud...", "#ffa000");
 
             try {
+                // Прямой запрос на Render (проверь, что URL верный!)
                 const response = await fetch('https://ecology-project-do42.onrender.com/send', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         client_name: name, 
                         weight: parseFloat(weight),
-                        waste_type: type 
+                        waste_type: type,
+                        date: new Date().toLocaleDateString()
                     })
                 });
 
                 if (response.ok) {
-                    statusDiv.innerText = "✅ Успешно отправлено в Supabase!";
-                    statusDiv.style.color = "#00c853";
+                    showStatus("✅ Заявка №" + Math.floor(Math.random()*1000) + " принята!", "#00c853");
                     document.getElementById('name').value = "";
                     document.getElementById('weight').value = "";
                 } else {
-                    statusDiv.innerText = "❌ Ошибка сервера (HTTPS)";
-                    statusDiv.style.color = "#ff5252";
+                    showStatus("❌ Ошибка соединения с Supabase", "#ff5252");
                 }
             } catch (e) {
-                statusDiv.innerText = "❌ Ошибка сети. Проверьте Render.";
-                statusDiv.style.color = "#ff5252";
+                showStatus("❌ Ошибка сети. Проверьте Render статус.", "#ff5252");
             }
+        }
+
+        function showStatus(text, color) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.style.display = "block";
+            statusDiv.innerText = text;
+            statusDiv.style.color = color;
+            statusDiv.style.background = color + "10";
+            statusDiv.style.border = "1px solid " + color;
         }
     </script>
 </body>
