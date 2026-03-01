@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЭкоСфера — Ваш надежный партнер в переработке мусора</title>
+    <style>
+        /* Общие стили и Цвета (взяты с примера) */
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f9fff4; color: #1a1a1a; scroll-behavior: smooth; }
+        
+        /* Цветовая палитра: */
+        /* Светло-зеленый фон: #f9fff4 */
+        /* Ярко-зеленый акцент: #8cc63f (примерный) */
+        /* Темный текст: #1a1a1a */
+
+        /* --- Шапка сайта (Header) --- */
+        header { background: #fff; padding: 15px 50px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000; }
+        .logo { font-size: 24px; font-weight: bold; color: #2d5a27; text-decoration: none; display: flex; align-items: center; }
+        .logo-icon { margin-right: 10px; font-size: 28px; }
+        
+        nav ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 30px; }
+        nav a { text-decoration: none; color: #1a1a1a; font-weight: 500; font-size: 16px; transition: color 0.3s; }
+        nav a:hover { color: #8cc63f; }
+
+        .header-contact { text-align: right; }
+        .phone { font-size: 18px; font-weight: bold; color: #1a1a1a; text-decoration: none; display: block; }
+        .callback { font-size: 12px; color: #8cc63f; text-decoration: underline; cursor: pointer; }
+
+        /* --- Главный блок (Hero Section) --- */
+        .hero { background-color: #f9fff4; padding: 100px 50px; display: flex; align-items: center; justify-content: space-between; gap: 50px; }
+        .hero-text { flex: 1; max-width: 600px; }
+        .hero-title { font-size: 48px; font-weight: bold; color: #1a1a1a; line-height: 1.2; margin-bottom: 20px; }
+        .hero-description { font-size: 18px; color: #4a4a4a; line-height: 1.6; margin-bottom: 40px; }
+        .hero-btn { display: inline-block; padding: 15px 35px; background-color: #1a1a1a; color: #fff; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px; transition: background 0.3s; }
+        .hero-btn:hover { background-color: #333; }
+        
+        /* Заглушка для изображения */
+        .hero-image { flex: 1; max-width: 500px; height: 350px; background-color: #e0e0e0; border-radius: 15px; display: flex; justify-content: center; align-items: center; color: #888; border: 2px dashed #ccc;}
+
+        /* --- Блок заявки (Form Section) --- */
+        .order-section { padding: 80px 50px; background: #fff; }
+        .container { max-width: 800px; margin: 0 auto; text-align: center; }
+        .section-title { font-size: 36px; color: #1a1a1a; margin-bottom: 10px; }
+        .section-subtitle { font-size: 18px; color: #666; margin-bottom: 50px; }
+
+        .form-box { background: #f9fff4; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: left; max-width: 500px; margin: 0 auto; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #1a1a1a; }
+        input { width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
+        
+        .submit-btn { width: 100%; padding: 15px; background-color: #8cc63f; color: white; border: none; border-radius: 5px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.3s; margin-top: 20px;}
+        .submit-btn:hover { background-color: #7ab336; }
+
+        /* Сообщения статуса */
+        #statusMessage { margin-top: 20px; text-align: center; font-weight: bold; padding: 10px; border-radius: 5px; display: none;}
+        .success { display: block !important; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { display: block !important; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* --- Подвал (Footer) --- */
+        footer { background: #1a1a1a; color: rgba(255,255,255,0.7); padding: 50px; text-align: center; font-size: 14px; }
+        .footer-logo { font-size: 20px; color: #fff; margin-bottom: 20px; display: block; text-decoration: none;}
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#" class="logo">
+            <span class="logo-icon">🌿</span>ЭкоСфера
+        </a>
+        <nav>
+            <ul>
+                <li><a href="#">Главная</a></li>
+                <li><a href="#about">О компании</a></li>
+                <li><a href="#services">Услуги</a></li>
+                <li><a href="#order">Оформить вывоз</a></li>
+            </ul>
+        </nav>
+        <div class="header-contact">
+            <a href="tel:88005553535" class="phone">8 (800) 555-35-35</a>
+            <span class="callback">Заказать обратный звонок</span>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="hero-text">
+            <h1 class="hero-title">Ваш надёжный партнёр в переработке мусора</h1>
+            <p class="hero-description">Современная компания по вывозу и утилизации промышленных и бытовых отходов. Мы делаем мир чище, превращая мусор в ценные ресурсы.</p>
+            <a href="#order" class="hero-btn">Узнать больше</a>
+        </div>
+        <div class="hero-image">
+            [ cite: Место для фото вашей спецтехники ]
+        </div>
+    </section>
+
+    <section id="order" class="order-section">
+        <div class="container">
+            <h2 class="section-title">Оформить заявку на вывоз</h2>
+            <p class="section-subtitle">Заполните форму, и наш менеджер свяжется с вами в течение 15 минут</p>
+            
+            <div class="form-box">
+                <div class="form-group">
+                    <label for="client_name">Ваше имя или Название компании</label>
+                    <input type="text" id="client_name" placeholder="ООО 'Пример' или Иван Иванов">
+                </div>
+
+                <div class="form-group">
+                    <label for="weight">Примерный вес отходов (кг)</label>
+                    <input type="number" id="weight" placeholder="Например: 500">
+                </div>
+
+                <button onclick="sendData()" class="submit-btn">Отправить заявку</button>
+                
+                <div id="statusMessage"></div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <a href="#" class="footer-logo">🌿 ЭкоСфера</a>
+        <p>&copy; 2026 ООО "ЭкоСфера". Все права защищены.</p>
+        <p>Дипломный проект. Тел: 8 (800) 555-35-35 | Email: info@ecosphera.ru</p>
+    </footer>
+
+    <script>
+        async function sendData() {
+            const name = document.getElementById('client_name').value;
+            const weightValue = document.getElementById('weight').value;
+            const statusDiv = document.getElementById('statusMessage');
+
+            // Очистка предыдущих статусов
+            statusDiv.innerText = "";
+            statusDiv.className = "";
+
+            if (!name || !weightValue) {
+                statusDiv.innerText = "⚠️ Пожалуйста, заполните все поля";
+                statusDiv.className = "error";
+                return;
+            }
+
+            statusDiv.innerText = "⏳ Отправка заявки...";
+            statusDiv.className = "success"; // Показываем как процесс
+
+            try {
+                // Сервер Python должен быть запущен на порту 8000!
+                const response = await fetch('http://127.0.0.1:8000/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        client_name: name,
+                        weight: parseFloat(weightValue)
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    statusDiv.innerText = "✅ Заявка принята! Менеджер скоро свяжется с вами.";
+                    statusDiv.className = "success";
+                    // Очистка полей
+                    document.getElementById('client_name').value = "";
+                    document.getElementById('weight').value = "";
+                } else {
+                    statusDiv.innerText = "❌ Ошибка сервера: " + result.details;
+                    statusDiv.className = "error";
+                }
+            } catch (err) {
+                statusDiv.innerText = "❌ Ошибка подключения. Убедитесь, что python main.py запущен!";
+                statusDiv.className = "error";
+            }
+        }
+    </script>
+</body>
+</html>
