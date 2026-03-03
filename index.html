@@ -3,334 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G-TRASH Professional | Экологический контроль</title>
+    <title>G-TRASH | Интеллектуальная Эко-система</title>
     
-    <!-- Шрифты и Иконки -->
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;800&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;900&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
-        /* 
-           CSS ФРЕЙМВОРК G-TRASH v4.0 
-           Более 800 строк стилей для профессионального вида
-        */
         :root {
             --primary: #2ecc71;
-            --primary-dark: #27ae60;
-            --dark: #1a1a1a;
-            --light: #f5f6fa;
-            --glass: rgba(255, 255, 255, 0.9);
-            --shadow: 0 15px 35px rgba(0,0,0,0.1);
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --transition: all 0.4s ease;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--light); color: var(--dark); overflow-x: hidden; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--light); color: var(--dark); line-height: 1.6; }
 
-        /* Кастомный скроллбар */
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: #eee; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 5px; }
-
-        /* Навигация */
+        /* HEADER & NAV */
         nav {
-            position: fixed; width: 100%; top: 0; z-index: 2000;
-            padding: 20px 8%; display: flex; justify-content: space-between; align-items: center;
-            background: var(--glass); backdrop-filter: blur(10px);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.05); transition: var(--transition);
+            position: fixed; width: 100%; top: 0; z-index: 1000;
+            padding: 20px 10%; display: flex; justify-content: space-between; align-items: center;
+            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-        nav.scrolled { padding: 10px 8%; }
-        .logo { font-family: 'Exo 2', sans-serif; font-size: 28px; font-weight: 800; color: var(--primary); cursor: pointer; }
+        .logo { font-family: 'Exo 2', sans-serif; font-size: 30px; font-weight: 900; color: var(--primary); }
         .nav-links { display: flex; gap: 30px; list-style: none; }
-        .nav-links a { 
-            text-decoration: none; color: var(--dark); font-weight: 600; font-size: 14px;
-            position: relative; transition: 0.3s;
-        }
-        .nav-links a::after {
-            content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0;
-            background: var(--primary); transition: 0.3s;
-        }
-        .nav-links a:hover::after { width: 100%; }
-        .nav-btn { 
-            background: var(--primary); color: white !important; 
-            padding: 10px 25px; border-radius: 50px; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
-        }
+        .nav-links a { text-decoration: none; color: var(--dark); font-weight: 700; font-size: 14px; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
 
-        /* Герой-секция */
+        /* HERO SECTION */
         .hero {
             height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
-                        url('https://images.unsplash.com/photo-1542601906990-b4d3fb773b09?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=1350&q=80');
             background-size: cover; background-position: center; background-attachment: fixed;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; color: white; padding: 0 20px;
+            color: white; text-align: center; padding: 0 20px;
         }
-        .hero h1 { font-family: 'Exo 2', sans-serif; font-size: 65px; margin-bottom: 20px; letter-spacing: -2px; }
-        .hero p { font-size: 20px; max-width: 800px; margin-bottom: 40px; opacity: 0.9; }
+        .hero h1 { font-family: 'Exo 2', sans-serif; font-size: 70px; margin-bottom: 20px; }
+        .hero p { font-size: 20px; max-width: 800px; margin-bottom: 40px; }
 
-        /* Статистика */
-        .stats-grid {
+        /* STATS */
+        .stats-container {
             display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px; width: 80%; margin: -50px auto 0; position: relative; z-index: 100;
+            gap: 20px; width: 80%; margin: -60px auto 0; position: relative; z-index: 100;
         }
         .stat-card {
-            background: white; padding: 30px; border-radius: 20px; text-align: center;
-            box-shadow: var(--shadow); transition: var(--transition);
+            background: white; padding: 30px; border-radius: 20px; text-align: center; box-shadow: var(--shadow);
         }
-        .stat-card:hover { transform: translateY(-10px); }
-        .stat-card i { font-size: 35px; color: var(--primary); margin-bottom: 15px; }
-        .stat-card h3 { font-size: 30px; margin-bottom: 5px; }
+        .stat-card h3 { font-size: 32px; color: var(--primary); }
 
-        /* Общие секции */
-        section { padding: 100px 10%; position: relative; }
+        /* SECTIONS */
+        section { padding: 80px 10%; }
         .section-title { text-align: center; margin-bottom: 60px; }
-        .section-title h2 { font-size: 40px; font-family: 'Exo 2'; margin-bottom: 15px; }
-        .section-title div { width: 80px; height: 4px; background: var(--primary); margin: 0 auto; }
+        .section-title h2 { font-size: 40px; font-family: 'Exo 2'; }
 
-        /* Личный кабинет */
-        #profile-section { display: none; background: #fff; border-radius: 30px; margin: 50px 10%; padding: 50px; box-shadow: var(--shadow); }
-        .order-history { display: grid; grid-template-columns: 1fr; gap: 15px; margin-top: 30px; }
-        .order-card { 
-            background: var(--light); padding: 20px; border-radius: 15px; 
-            display: flex; justify-content: space-between; align-items: center;
-            border-left: 5px solid var(--primary);
-        }
+        /* PERSONAL ACCOUNT */
+        #profile-section { display: none; background: white; margin: 40px 10%; border-radius: 30px; padding: 50px; box-shadow: var(--shadow); }
+        .order-history-item { background: var(--light); padding: 20px; border-radius: 15px; margin-bottom: 10px; border-left: 5px solid var(--primary); display: flex; justify-content: space-between; }
 
-        /* Форма заявки */
-        .request-container {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center;
-            background: white; border-radius: 30px; overflow: hidden; box-shadow: var(--shadow);
-        }
-        .form-side { padding: 50px; }
-        .image-side { 
-            height: 100%; background: url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80');
-            background-size: cover;
-        }
-        input, select, textarea {
-            width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #eee;
-            border-radius: 12px; font-family: inherit; transition: 0.3s;
-        }
-        input:focus { border-color: var(--primary); outline: none; }
-        .btn-main {
-            background: var(--primary); color: white; border: none; padding: 18px 40px;
-            border-radius: 12px; font-weight: 700; cursor: pointer; transition: var(--transition);
-            width: 100%; font-size: 16px;
-        }
-        .btn-main:hover { background: var(--primary-dark); transform: scale(1.02); }
+        /* FORM */
+        .form-box { background: white; padding: 40px; border-radius: 30px; box-shadow: var(--shadow); max-width: 600px; margin: 0 auto; }
+        input, select { width: 100%; padding: 15px; margin-bottom: 20px; border: 2px solid #eee; border-radius: 12px; font-family: inherit; }
+        .btn { background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; transition: 0.3s; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3); }
 
-        /* Карта */
+        /* MAP */
         #map { height: 500px; border-radius: 30px; box-shadow: var(--shadow); }
 
-        /* Модальные окна */
-        .modal {
-            display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background: white; margin: 10% auto; padding: 40px; border-radius: 25px;
-            width: 400px; position: relative; animation: slideIn 0.5s;
-        }
-        @keyframes slideIn { from {transform: translateY(-50px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
+        /* MODAL */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); }
+        .modal-content { background: white; width: 350px; margin: 10% auto; padding: 30px; border-radius: 20px; text-align: center; }
 
-        footer { background: var(--dark); color: white; padding: 80px 10% 30px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 50px; }
-        
-        /* Скрытие элементов */
-        .hidden { display: none !important; }
+        footer { background: var(--dark); color: white; padding: 50px 10%; text-align: center; }
     </style>
 </head>
 <body>
 
-    <!-- Навигация -->
-    <nav id="navbar">
-        <div class="logo" onclick="window.scrollTo(0,0)">G-TRASH</div>
+    <nav>
+        <div class="logo">G-TRASH</div>
         <ul class="nav-links">
-            <li><a href="#about">О ПРОЕКТЕ</a></li>
+            <li><a href="#stats">СТАТИСТИКА</a></li>
             <li><a href="#map-section">КАРТА</a></li>
-            <li><a href="#request">ОСТАВИТЬ ЗАЯВКУ</a></li>
-            <li><a href="#news">НОВОСТИ</a></li>
-            <li id="auth-nav"><a onclick="openModal()" class="nav-btn">ЛИЧНЫЙ КАБИНЕТ</a></li>
-            <li id="user-nav" class="hidden"><a href="#profile-section" style="color: var(--primary)">МОЙ ПРОФИЛЬ</a></li>
+            <li><a href="#request">ЗАЯВКА</a></li>
+            <li id="auth-nav"><a onclick="toggleModal()" style="cursor: pointer; background: var(--primary); color: white; padding: 8px 20px; border-radius: 50px;">ВХОД</a></li>
+            <li id="user-nav" style="display: none;"><a href="#profile-section" style="color: var(--primary); font-weight: 900;">ЛИЧНЫЙ КАБИНЕТ</a></li>
         </ul>
     </nav>
 
-    <!-- Герой -->
     <header class="hero">
-        <h1 class="animate__animated animate__fadeInDown">Революция в переработке</h1>
-        <p class="animate__animated animate__fadeInUp animate__delay-1s">Мы создали интеллектуальную систему управления отходами для городов будущего. Сдавайте мусор, отслеживайте статистику и делайте мир чище вместе с G-TRASH.</p>
-        <a href="#request" class="btn-main" style="width: auto;">Начать прямо сейчас</a>
+        <h1 class="animate__animated animate__fadeInDown">Будущее экологии уже здесь</h1>
+        <p class="animate__animated animate__fadeInUp">Интеллектуальный сервис по сбору и переработке отходов. Сделаем мир чище вместе с G-TRASH.</p>
+        <a href="#request" class="btn" style="width: auto;">ОСТАВИТЬ ЗАЯВКУ</a>
     </header>
 
-    <!-- Статистика -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <i class="fas fa-recycle"></i>
-            <h3 id="stat-kg">1,240</h3>
-            <p>кг переработано</p>
-        </div>
-        <div class="stat-card">
-            <i class="fas fa-users"></i>
-            <h3 id="stat-users">850</h3>
-            <p>активных эко-героев</p>
-        </div>
-        <div class="stat-card">
-            <i class="fas fa-leaf"></i>
-            <h3 id="stat-trees">45</h3>
-            <p>деревьев спасено</p>
-        </div>
+    <div class="stats-container" id="stats">
+        <div class="stat-card"><h3><i class="fas fa-weight-hanging"></i> <span id="stat-kg">0</span></h3><p>кг собрано</p></div>
+        <div class="stat-card"><h3><i class="fas fa-check-circle"></i> <span id="stat-count">0</span></h3><p>заявок исполнено</p></div>
+        <div class="stat-card"><h3><i class="fas fa-users"></i> <span id="stat-users">0</span></h3><p>эко-героев</p></div>
     </div>
 
-    <!-- Личный кабинет (скрыт до логина) -->
+    <!-- ЛИЧНЫЙ КАБИНЕТ -->
     <section id="profile-section">
         <div class="section-title">
-            <h2>Добро пожаловать, <span id="user-display-name">Герой</span>!</h2>
-            <p>Здесь ваша история спасения планеты</p>
-            <div></div>
+            <h2>Личный кабинет: <span id="user-name"></span></h2>
+            <button onclick="logout()" style="background: none; border: 1px solid red; color: red; padding: 5px 15px; border-radius: 5px; cursor: pointer;">Выйти</button>
         </div>
-        <div class="order-history" id="my-orders">
-            <!-- Заказы подгрузятся из БД -->
-        </div>
-        <button class="btn-main" onclick="logout()" style="background: #e74c3c; width: 200px; margin-top: 30px;">Выйти из аккаунта</button>
+        <div id="history-list">Загрузка истории...</div>
     </section>
 
-    <!-- Карта -->
     <section id="map-section">
-        <div class="section-title">
-            <h2>Точки приема по всей стране</h2>
-            <p>Найдите ближайший бокс G-TRASH на интерактивной карте</p>
-            <div></div>
-        </div>
+        <div class="section-title"><h2>Карта пунктов G-TRASH</h2></div>
         <div id="map"></div>
     </section>
 
-    <!-- Заявка -->
     <section id="request">
-        <div class="request-container">
-            <div class="form-side">
-                <h2>Оформить вывоз</h2>
-                <p style="margin-bottom: 30px;">Заполните форму, и наша команда приедет к вам в течение 24 часов.</p>
-                
-                <input type="text" id="req-name" placeholder="Ваше полное имя">
-                <select id="req-type">
-                    <option value="Пластик">Пластик (PET/HDPE)</option>
-                    <option value="Макулатура">Макулатура / Картон</option>
-                    <option value="Стекло">Стекло</option>
-                    <option value="Металл">Цветной металл</option>
-                </select>
-                <input type="number" id="req-weight" placeholder="Примерный вес (кг)">
-                <button class="btn-main" onclick="sendOrder()">ОТПРАВИТЬ ЗАЯВКУ</button>
-                <p id="req-status" style="margin-top: 15px; font-weight: 700;"></p>
-            </div>
-            <div class="image-side"></div>
+        <div class="form-box">
+            <h2 style="text-align: center; margin-bottom: 20px;">Оставить заявку</h2>
+            <input type="text" id="req-name" placeholder="Ваше имя">
+            <select id="req-type">
+                <option value="Пластик">Пластик</option>
+                <option value="Макулатура">Макулатура</option>
+                <option value="Стекло">Стекло</option>
+                <option value="Металл">Металл</option>
+            </select>
+            <input type="number" id="req-weight" placeholder="Вес (кг)">
+            <button class="btn" onclick="sendOrder()">ОТПРАВИТЬ ДАННЫЕ В БД</button>
+            <div id="req-status" style="margin-top: 15px; text-align: center; font-weight: bold;"></div>
         </div>
     </section>
 
-    <!-- Модалка логина -->
+    <!-- МОДАЛКА -->
     <div id="authModal" class="modal">
         <div class="modal-content">
-            <h2 id="auth-title">Вход в систему</h2>
-            <p style="margin-bottom: 20px; font-size: 14px;">Введите ваши данные для доступа к кабинету</p>
-            
-            <input type="email" id="auth-email" placeholder="E-mail адрес">
+            <h2 id="modal-title">Вход</h2>
+            <input type="email" id="auth-email" placeholder="Email">
             <input type="password" id="auth-pass" placeholder="Пароль">
-            <input type="text" id="auth-name" placeholder="Ваше Имя (для регистрации)" class="hidden">
-            
-            <button class="btn-main" id="auth-submit" onclick="handleAuth()">ВОЙТИ</button>
-            <p style="text-align: center; margin-top: 20px; font-size: 13px;">
-                <span id="switch-text">Нет аккаунта?</span> 
-                <a onclick="toggleAuthMode()" style="color: var(--primary); cursor: pointer; font-weight: 700;">Нажмите сюда</a>
-            </p>
-            <button class="btn-main" onclick="closeModal()" style="background: #999; margin-top: 10px;">Закрыть</button>
+            <input type="text" id="auth-full-name" placeholder="Имя (для регистрации)" style="display: none;">
+            <button class="btn" onclick="authProcess()" id="auth-btn">Войти</button>
+            <p onclick="toggleRegMode()" style="margin-top: 15px; cursor: pointer; color: blue; font-size: 12px;" id="reg-toggle">Нет аккаунта? Регистрация</p>
+            <button class="btn" onclick="toggleModal()" style="background: #999; margin-top: 10px;">Закрыть</button>
         </div>
     </div>
 
     <footer>
-        <div class="footer-grid">
-            <div>
-                <h3 style="margin-bottom: 20px;">G-TRASH</h3>
-                <p>Профессиональный сервис по управлению промышленными и бытовыми отходами. Мы делаем экологию доступной.</p>
-            </div>
-            <div>
-                <h3>Контакты</h3>
-                <p><i class="fas fa-phone"></i> 8 (800) 555-35-35</p>
-                <p><i class="fas fa-envelope"></i> info@g-trash.ru</p>
-                <p><i class="fas fa-map-marker-alt"></i> Москва, Технопарк "Сколково"</p>
-            </div>
-            <div>
-                <h3>Соцсети</h3>
-                <div style="display: flex; gap: 20px; font-size: 24px; margin-top: 20px;">
-                    <i class="fab fa-telegram"></i>
-                    <i class="fab fa-vk"></i>
-                    <i class="fab fa-youtube"></i>
-                </div>
-            </div>
-        </div>
-        <p style="text-align: center; border-top: 1px solid #333; padding-top: 20px; font-size: 12px; color: #666;">
-            © 2026 G-TRASH Дипломный проект. Все права защищены.
-        </p>
+        <p>&copy; 2026 G-TRASH Дипломный проект. <br> Все данные сохраняются в PostgreSQL Supabase.</p>
     </footer>
 
-    <!-- Скрипты -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        /* 
-           G-TRASH ENGINE v4.0 
-           Полная логика взаимодействия с бэкендом
-        */
-        const API_URL = "https://ecology-project-do42.onrender.com"; // Твой URL
+        const API_URL = "https://ecology-project-do42.onrender.com";
         let currentUser = JSON.parse(localStorage.getItem('eco_user')) || null;
-        let isLoginMode = true;
+        let isRegMode = false;
 
-        // Инициализация при загрузке
-        window.addEventListener('DOMContentLoaded', () => {
+        window.onload = () => {
             initMap();
-            checkUser();
             updateStats();
-            
-            window.addEventListener('scroll', () => {
-                const nav = document.getElementById('navbar');
-                if (window.scrollY > 50) nav.classList.add('scrolled');
-                else nav.classList.remove('scrolled');
-            });
-        });
+            if(currentUser) showProfile();
+        };
 
         function initMap() {
-            const map = L.map('map').setView([55.751244, 37.618423], 4);
+            const map = L.map('map').setView([55.75, 37.61], 4);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            
-            const points = [
-                {lat: 55.75, lon: 37.61, name: "Центральный хаб Москва"},
-                {lat: 59.93, lon: 30.33, name: "Пункт Спб"},
-                {lat: 45.03, lon: 38.97, name: "Пункт Краснодар"},
-                {lat: 56.83, lon: 60.60, name: "Екатеринбург Эко"}
-            ];
-            
-            points.forEach(p => {
-                L.marker([p.lat, p.lon]).addTo(map).bindPopup(`<b>G-TRASH</b><br>${p.name}`);
-            });
+            L.marker([55.75, 37.61]).addTo(map).bindPopup("<b>G-TRASH</b>: Москва");
         }
 
-        // Авторизация
-        function openModal() { document.getElementById('authModal').style.display = 'block'; }
-        function closeModal() { document.getElementById('authModal').style.display = 'none'; }
-
-        function toggleAuthMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('auth-title').innerText = isLoginMode ? "Вход в систему" : "Регистрация";
-            document.getElementById('auth-name').classList.toggle('hidden');
-            document.getElementById('auth-submit').innerText = isLoginMode ? "ВОЙТИ" : "СОЗДАТЬ АККАУНТ";
-            document.getElementById('switch-text').innerText = isLoginMode ? "Нет аккаунта?" : "Уже есть аккаунт?";
+        async function updateStats() {
+            const res = await fetch(`${API_URL}/api/stats`);
+            const data = await res.json();
+            document.getElementById('stat-kg').innerText = Math.floor(data.total_kg);
+            document.getElementById('stat-count').innerText = data.count;
+            document.getElementById('stat-users').innerText = data.users;
         }
 
-        async function handleAuth() {
+        function toggleModal() {
+            const m = document.getElementById('authModal');
+            m.style.display = m.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function toggleRegMode() {
+            isRegMode = !isRegMode;
+            document.getElementById('modal-title').innerText = isRegMode ? "Регистрация" : "Вход";
+            document.getElementById('auth-full-name').style.display = isRegMode ? "block" : "none";
+            document.getElementById('auth-btn').innerText = isRegMode ? "Создать" : "Войти";
+            document.getElementById('reg-toggle').innerText = isRegMode ? "Уже есть аккаунт?" : "Нет аккаунта? Регистрация";
+        }
+
+        async function authProcess() {
             const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-pass').value;
-            const full_name = document.getElementById('auth-name').value;
+            const pass = document.getElementById('auth-pass').value;
+            const name = document.getElementById('auth-full-name').value;
 
-            const endpoint = isLoginMode ? "/api/login" : "/api/register";
-            const payload = isLoginMode ? {email, password} : {email, password, full_name};
+            const endpoint = isRegMode ? "/api/register" : "/api/login";
+            const payload = isRegMode ? {email, password: pass, full_name: name} : {email, password: pass};
 
             try {
                 const res = await fetch(API_URL + endpoint, {
@@ -338,76 +204,45 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(payload)
                 });
-                
                 const data = await res.json();
-                
                 if (res.ok) {
-                    if (isLoginMode) {
-                        localStorage.setItem('eco_user', JSON.stringify(data));
-                        location.reload();
-                    } else {
-                        alert("Регистрация успешна! Теперь войдите.");
-                        toggleAuthMode();
-                    }
-                } else {
-                    alert(data.detail || "Ошибка доступа");
-                }
-            } catch (e) { alert("Ошибка подключения к серверу"); }
+                    if (isRegMode) { alert("Успех! Войдите."); toggleRegMode(); }
+                    else { localStorage.setItem('eco_user', JSON.stringify(data)); location.reload(); }
+                } else { alert(data.detail); }
+            } catch (e) { alert("Ошибка API"); }
         }
 
-        function checkUser() {
-            if (currentUser) {
-                document.getElementById('auth-nav').classList.add('hidden');
-                document.getElementById('user-nav').classList.remove('hidden');
-                document.getElementById('profile-section').style.display = 'block';
-                document.getElementById('user-display-name').innerText = currentUser.full_name;
-                loadMyOrders();
-            }
+        function showProfile() {
+            document.getElementById('profile-section').style.display = 'block';
+            document.getElementById('auth-nav').style.display = 'none';
+            document.getElementById('user-nav').style.display = 'block';
+            document.getElementById('user-name').innerText = currentUser.full_name;
+            loadHistory();
         }
 
-        async function loadMyOrders() {
-            try {
-                const res = await fetch(`${API_URL}/api/my-orders/${currentUser.id}`);
-                const orders = await res.json();
-                const container = document.getElementById('my-orders');
-                
-                if (orders.length === 0) {
-                    container.innerHTML = "<p>У вас пока нет заявок. Время спасать мир!</p>";
-                    return;
-                }
-
-                container.innerHTML = orders.map(o => `
-                    <div class="order-card">
-                        <div>
-                            <strong>${o.waste_type}</strong><br>
-                            <small>Дата: ${new Date(o.order_date).toLocaleDateString()}</small>
-                        </div>
-                        <div style="text-align: right;">
-                            <span style="color: var(--primary); font-weight: 800;">${o.weight_kg} кг</span><br>
-                            <span style="font-size: 12px; background: #eee; padding: 3px 8px; border-radius: 10px;">${o.status}</span>
-                        </div>
-                    </div>
-                `).join('');
-            } catch (e) { console.error("Ошибка загрузки истории"); }
+        async function loadHistory() {
+            const res = await fetch(`${API_URL}/api/my-orders/${currentUser.id}`);
+            const data = await res.json();
+            const list = document.getElementById('history-list');
+            list.innerHTML = data.map(o => `
+                <div class="order-history-item">
+                    <span><b>${o.waste_type}</b>: ${o.weight_kg} кг</span>
+                    <span>${new Date(o.order_date).toLocaleDateString()}</span>
+                </div>
+            `).join('');
         }
 
         async function sendOrder() {
             const name = document.getElementById('req-name').value;
             const type = document.getElementById('req-type').value;
             const weight = document.getElementById('req-weight').value;
-            const status = document.getElementById('req-status');
+            const statusDiv = document.getElementById('req-status');
 
-            if (!name || !weight) { alert("Заполните все поля!"); return; }
+            if (!name || !weight) { alert("Заполните поля"); return; }
+            statusDiv.innerText = "⏳ Отправка в PostgreSQL...";
 
-            const payload = {
-                client_name: name,
-                waste_type: type,
-                weight_kg: parseFloat(weight),
-                user_id: currentUser ? currentUser.id : null
-            };
+            const payload = { client_name: name, waste_type: type, weight_kg: parseFloat(weight), user_id: currentUser ? currentUser.id : null };
 
-            status.innerText = "⏳ Отправка...";
-            
             try {
                 const res = await fetch(API_URL + '/api/orders', {
                     method: 'POST',
@@ -415,30 +250,19 @@
                     body: JSON.stringify(payload)
                 });
                 if (res.ok) {
-                    status.innerText = "✅ Заявка принята! Данные в базе.";
-                    status.style.color = "green";
-                    if(currentUser) loadMyOrders();
+                    statusDiv.innerText = "✅ Данные в Supabase!";
+                    statusDiv.style.color = "green";
                     updateStats();
+                    if(currentUser) loadHistory();
                 }
-            } catch (e) { status.innerText = "❌ Ошибка БД"; }
+            } catch (e) { statusDiv.innerText = "❌ Ошибка БД"; }
         }
 
-        async function updateStats() {
-            try {
-                const res = await fetch(API_URL + '/api/stats');
-                const data = await res.json();
-                document.getElementById('stat-kg').innerText = Math.floor(data.total_kg || 1240);
-                document.getElementById('stat-users').innerText = data.active_users || 850;
-            } catch (e) {}
-        }
-
-        function logout() {
-            localStorage.removeItem('eco_user');
-            location.reload();
-        }
+        function logout() { localStorage.removeItem('eco_user'); location.reload(); }
     </script>
 </body>
 </html>
+
 
 
 
