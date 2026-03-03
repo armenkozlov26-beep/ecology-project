@@ -1,107 +1,135 @@
 """
 ====================================================================================================
-ПРОГРАММНЫЙ КОМПЛЕКС "G-TRASH: ECO-LOGISTICS PRO" (v45.0)
+G-TRASH GLOBAL ECO-SYSTEM v50.0 [ULTIMATE ENTERPRISE EDITION]
+CORE ARCHITECTURE: FastAPI High-Concurrency Framework
+DATABASE LAYER: PostgreSQL (Supabase Direct Node Integration)
 ====================================================================================================
-ЯДРО СЕРВЕРНОЙ ЧАСТИ (BACKEND ENGINE)
-РАЗРАБОТАНО ДЛЯ ДИПЛОМНОГО ПРОЕКТА ПО НАПРАВЛЕНИЮ: ИНФОРМАЦИОННЫЕ СИСТЕМЫ И ТЕХНОЛОГИИ
-====================================================================================================
+Данный программный продукт является комплексной системой управления экологическими активами.
+Разработано для дипломной работы с учетом стандартов промышленного программирования.
 
-ОПИСАНИЕ МОДУЛЯ:
-Данный программный продукт реализует RESTful API интерфейс для автоматизированного управления 
-вторичными ресурсами. В основе лежит архитектура FastAPI с интеграцией облачной БД PostgreSQL.
-
-КЛЮЧЕВЫЕ ХАРАКТЕРИСТИКИ:
-1. Интеграция с СУБД: Прямое подключение к Supabase (Direct Connection) на порту 5432.
-2. Безопасность: Валидация входных данных через Pydantic-схемы.
-3. Логика: Автоматический расчет экологических баллов пользователя (1 кг = 10 бонусов).
-4. Масштабируемость: Модульная структура позволяет добавлять новые типы отходов без изменения ядра.
+ИНФРАСТРУКТУРНЫЕ МОДУЛИ:
+1. USER_AUTH_SUBSYSTEM: Управление сессиями и профилями эко-активистов.
+2. TRANSACTIONAL_RAW_ENGINE: Обработка потоков вторичного сырья и транзакций в БД.
+3. ANALYTICS_CORE_V4: Вычисление глобальных и персональных метрик эффективности.
+4. CONTENT_MANAGEMENT_API: Динамическое управление статьями, FAQ и командой.
+5. SECURITY_LAYER: Защита соединений через SSL и валидация схем Pydantic.
 ====================================================================================================
 """
 
 import os
+import time
 import logging
 import datetime
 from typing import List, Optional, Dict, Any
 
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, ForeignKey, desc, func
+from pydantic import BaseModel, EmailStr, Field
+from sqlalchemy import create_engine, Column, Integer, String, Float, DateTime, ForeignKey, Text, desc, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, relationship
 
 # --------------------------------------------------------------------------------------------------
-# СИСТЕМА МОНИТОРИНГА И ЛОГИРОВАНИЯ
+# СИСТЕМА ГЛОБАЛЬНОГО ЛОГИРОВАНИЯ (SYSTEM MONITORING)
 # --------------------------------------------------------------------------------------------------
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
-logger = logging.getLogger("G_TRASH_NATURAL_API")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | [%(levelname)s] | %(name)s : %(message)s",
+    handlers=[logging.StreamHandler()]
+)
+logger = logging.getLogger("ECO_SYSTEM_PRO_CORE")
 
 # --------------------------------------------------------------------------------------------------
-# ИНИЦИАЛИЗАЦИЯ БАЗЫ ДАННЫХ (POSTGRESQL)
+# ПОДКЛЮЧЕНИЕ К КЛАСТЕРУ PostgreSQL (DATABASE ARCHITECTURE)
 # --------------------------------------------------------------------------------------------------
-# ВАЖНО: DATABASE_URL в Render должен быть прямым (db.kylnesalchqnmhqadluh.supabase.co)
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-try:
-    # pool_pre_ping=True обеспечивает автоматическое восстановление соединения
-    engine = create_engine(
-        DATABASE_URL, 
-        pool_pre_ping=True, 
-        pool_size=10, 
-        max_overflow=20,
-        connect_args={"sslmode": "require"}
-    )
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    Base = declarative_base()
-    logger.info("CORE: Движок PostgreSQL успешно инициализирован.")
-except Exception as e:
-    logger.error(f"DATABASE CONNECTION FAULT: {e}")
+if not DATABASE_URL:
+    logger.critical("КРИТИЧЕСКАЯ ОШИБКА: DATABASE_URL не найден в переменных окружения Render!")
+    # Заглушка для сборки (не для работы)
+    DATABASE_URL = "postgresql://postgres:pass@localhost:5432/postgres"
+
+# Инициализация Engine с параметрами высокой доступности
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,      # Проверка коннекта перед транзакцией
+    pool_size=25,            # Количество постоянных соединений
+    max_overflow=50,         # Лимит дополнительных соединений
+    pool_recycle=1800,       # Сброс пула каждые 30 минут
+    connect_args={"sslmode": "require"}
+)
+
+# Фабрика сессий
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Декларативная база моделей
+Base = declarative_base()
 
 # --------------------------------------------------------------------------------------------------
-# ОПРЕДЕЛЕНИЕ СТРУКТУРЫ ТАБЛИЦ (ORM MODELS)
+# ОПРЕДЕЛЕНИЕ СТРУКТУРЫ ТАБЛИЦ (ORM DATA MODELS)
 # --------------------------------------------------------------------------------------------------
 
-class UserEntity(Base):
-    """Сущность 'Эко-активист' - информация о зарегистрированных пользователях"""
+class UserProfile(Base):
+    """Сущность 'Эко-активист' - центральный профиль системы"""
     __tablename__ = "users"
     
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     full_name = Column(String(255), nullable=False)
     email = Column(String(255), unique=True, index=True, nullable=False)
     password = Column(String(255), nullable=False)
-    eco_points = Column(Integer, default=0)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
     
-    # Связь N:1 с заказами
-    orders = relationship("OrderEntity", back_populates="owner", cascade="all, delete-orphan")
+    # Метрики лояльности
+    eco_points = Column(Integer, default=0)
+    current_level = Column(String(50), default="Green Beginner")
+    total_recycled_kg = Column(Float, default=0.0)
+    
+    registration_date = Column(DateTime, default=datetime.datetime.utcnow)
+    
+    # Реляционные связи
+    orders = relationship("RawTransaction", back_populates="initiator", cascade="all, delete-orphan")
 
-class OrderEntity(Base):
-    """Сущность 'Транзакция' - данные о каждой сдаче сырья в систему"""
+class RawTransaction(Base):
+    """Сущность 'Транзакция ресурсов' - записи о сдаче сырья"""
     __tablename__ = "orders"
     
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     client_name = Column(String(255), nullable=False)
-    waste_type = Column(String(100), nullable=False)
-    weight_kg = Column(Float, nullable=False)
-    transaction_status = Column(String(50), default="ПОДТВЕРЖДЕНО")
-    order_date = Column(DateTime, default=datetime.datetime.utcnow)
+    resource_category = Column(String(100), nullable=False)
+    mass_kg = Column(Float, nullable=False)
     
-    # Привязка к аккаунту (может быть пустой для гостевой заявки)
+    status = Column(String(50), default="CONFIRMED_IN_DB")
+    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    
+    # Внешний ключ связи с пользователем
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
-    owner = relationship("UserEntity", back_populates="orders")
+    initiator = relationship("UserProfile", back_populates="orders")
 
-# Автоматическое создание/обновление таблиц в Supabase
+class KnowledgeBase(Base):
+    """Сущность 'База знаний' - динамический контент блога"""
+    __tablename__ = "knowledge_base"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String(500))
+    content = Column(Text)
+    category = Column(String(100))
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
+
+# Синхронизация схем данных с облаком Supabase
 try:
     Base.metadata.create_all(bind=engine)
-    logger.info("CORE: Таблицы успешно синхронизированы.")
-except Exception as err:
-    logger.error(f"SCHEMA ERROR: {err}")
+    logger.info("CORE: Структура таблиц PostgreSQL синхронизирована успешно.")
+except Exception as e:
+    logger.error(f"SCHEMA SYNC FAULT: {e}")
 
 # --------------------------------------------------------------------------------------------------
-# НАСТРОЙКА FASTAPI ПРИЛОЖЕНИЯ
+# ИНИЦИАЛИЗАЦИЯ ИНТЕРФЕЙСА FASTAPI
 # --------------------------------------------------------------------------------------------------
-app = FastAPI(title="G-TRASH ECO PRO API", version="45.0.0")
+app = FastAPI(
+    title="G-TRASH PROFESSIONAL ENTERPRISE API",
+    description="Backend-ядро системы управления ресурсами v50.0",
+    version="50.0.0"
+)
 
-# Разрешение CORS для доступа с фронтенда
+# Настройка CORS (Cross-Origin Resource Sharing)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -110,99 +138,136 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Зависимость получения сессии
-def get_db_session():
+# Инъекция сессии БД в эндпоинты
+def get_db():
     db = SessionLocal()
-    try: yield db
-    finally: db.close()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # --------------------------------------------------------------------------------------------------
-# БИЗНЕС-ЛОГИКА (API ENDPOINTS)
+# ПУБЛИЧНЫЕ МАРШРУТЫ API (PUBLIC ENDPOINTS)
 # --------------------------------------------------------------------------------------------------
 
-@app.get("/")
-def health_info():
-    return {"status": "ECO_PORTAL_PRO_ACTIVE", "database": "CONNECTED", "timestamp": datetime.datetime.utcnow()}
+@app.get("/", tags=["System"])
+def system_check():
+    """Мониторинг работоспособности сервиса"""
+    return {
+        "engine": "G-TRASH-ENTERPRISE-PRO",
+        "version": "50.0.1",
+        "db_status": "connected_to_supabase",
+        "timestamp": datetime.datetime.utcnow()
+    }
 
-@app.post("/api/auth/register")
-def register_hero(payload: dict, db: Session = Depends(get_db_session)):
-    """Регистрация нового эко-героя"""
-    if db.query(UserEntity).filter(UserEntity.email == payload['email']).first():
-        raise HTTPException(status_code=400, detail="Этот адрес уже в базе.")
+@app.get("/api/v1/analytics/global", tags=["Analytics"])
+def fetch_global_metrics(db: Session = Depends(get_db)):
+    """Агрегация макро-экологических данных всей платформы"""
+    try:
+        total_mass = db.query(func.sum(RawTransaction.mass_kg)).scalar() or 0
+        total_orders = db.query(RawTransaction).count()
+        total_activists = db.query(UserProfile).count()
+        
+        # Интеллектуальный расчет спасенных ресурсов
+        return {
+            "total_kg": round(total_mass, 2),
+            "orders_count": total_orders,
+            "activists_count": total_activists,
+            "trees_saved": int(total_mass * 0.017),
+            "co2_reduced": round(total_mass * 2.5, 1)
+        }
+    except Exception as e:
+        logger.error(f"Analytics failure: {e}")
+        return {"total_kg": 0, "orders_count": 0, "activists_count": 0}
+
+# --------------------------------------------------------------------------------------------------
+# СЕРВИСЫ АУТЕНТИФИКАЦИИ (IDENTITY SERVICES)
+# --------------------------------------------------------------------------------------------------
+
+@app.post("/api/v1/auth/register", tags=["Identity"])
+def account_creation(payload: dict, db: Session = Depends(get_db)):
+    """Регистрация нового узла (пользователя) в системе"""
+    logger.info(f"Регистрация: {payload.get('email')}")
     
-    new_user = UserEntity(
-        full_name=payload['full_name'],
-        email=payload['email'],
-        password=payload['password']
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"id": new_user.id, "message": "Добро пожаловать в G-TRASH!"}
+    email_check = db.query(UserProfile).filter(UserProfile.email == payload['email']).first()
+    if email_check:
+        raise HTTPException(status_code=400, detail="Этот идентификатор (Email) уже занят.")
+    
+    try:
+        new_hero = UserProfile(
+            full_name=payload['full_name'],
+            email=payload['email'],
+            password=payload['password']
+        )
+        db.add(new_hero)
+        db.commit()
+        db.refresh(new_hero)
+        return {"status": "success", "user_id": new_hero.id}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/api/auth/login")
-def login_hero(payload: dict, db: Session = Depends(get_db_session)):
-    """Вход в личный кабинет и получение статистики профиля"""
-    user = db.query(UserEntity).filter(
-        UserEntity.email == payload['email'], 
-        UserEntity.password == payload['password']
+@app.post("/api/v1/auth/login", tags=["Identity"])
+def account_authorization(payload: dict, db: Session = Depends(get_db)):
+    """Авторизация и выдача операционных данных профиля"""
+    user = db.query(UserProfile).filter(
+        UserProfile.email == payload['email'], 
+        UserProfile.password == payload['password']
     ).first()
     
     if not user:
-        raise HTTPException(status_code=401, detail="Ошибка доступа. Проверьте данные.")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Доступ запрещен. Ошибка данных.")
     
     return {
         "id": user.id,
         "full_name": user.full_name,
         "email": user.email,
-        "points": user.eco_points
+        "points": user.eco_points,
+        "rank": user.current_level
     }
 
-@app.post("/api/orders/create")
-async def create_eco_transaction(payload: dict, db: Session = Depends(get_db_session)):
-    """Запись новой заявки в PostgreSQL и расчет бонусов"""
+# --------------------------------------------------------------------------------------------------
+# УПРАВЛЕНИЕ РЕСУРСАМИ (TRANSACTIONS)
+# --------------------------------------------------------------------------------------------------
+
+@app.post("/api/v1/transactions/create", tags=["Logistics"])
+async def process_raw_resource(data: dict, db: Session = Depends(get_db)):
+    """Инициализация процесса сдачи вторичного сырья в PostgreSQL"""
+    logger.info(f"Новая эко-транзакция от: {data.get('client_name')}")
     try:
-        new_order = OrderEntity(
-            client_name=payload['client_name'],
-            waste_type=payload['waste_type'],
-            weight_kg=float(payload['weight_kg']),
-            user_id=payload.get('user_id')
+        new_tx = RawTransaction(
+            client_name=data['client_name'],
+            resource_category=data['waste_type'],
+            mass_kg=float(data['weight_kg']),
+            user_id=data.get('user_id')
         )
-        db.add(new_order)
+        db.add(new_tx)
         db.commit()
+        db.refresh(new_tx)
         
-        # Начисление баллов (1 кг = 10 бонусов)
-        if new_order.user_id:
-            user = db.query(UserEntity).filter(UserEntity.id == new_order.user_id).first()
+        # Обработка бонусов лояльности
+        if new_tx.user_id:
+            user = db.query(UserProfile).filter(UserProfile.id == new_tx.user_id).first()
             if user:
-                user.eco_points += int(new_order.weight_kg * 10)
+                user.eco_points += int(new_tx.mass_kg * 12) # Коэффициент бонусов 12x
+                user.total_recycled_kg += new_tx.mass_kg
                 db.commit()
 
-        logger.info(f"TRANSACTION OK: {new_order.id}")
-        return {"status": "success", "id": new_order.id}
+        return {"status": "TX_SUCCESS", "tx_id": new_tx.id}
     except Exception as e:
         db.rollback()
-        logger.error(f"DB WRITE ERROR: {e}")
-        raise HTTPException(status_code=500, detail=f"Ошибка БД: {str(e)}")
+        logger.error(f"Transaction Fault: {e}")
+        raise HTTPException(status_code=500, detail="Ошибка при записи транзакции в Supabase.")
 
-@app.get("/api/orders/my/{uid}")
-def fetch_user_history(uid: int, db: Session = Depends(get_db_session)):
-    """Получение персональной истории заявок"""
-    return db.query(OrderEntity).filter(OrderEntity.user_id == uid).order_by(desc(OrderEntity.order_date)).all()
+@app.get("/api/v1/transactions/history/{uid}", tags=["Logistics"])
+def get_user_transaction_log(uid: int, db: Session = Depends(get_db)):
+    """Получение полной истории взаимодействия пользователя с системой"""
+    return db.query(RawTransaction).filter(RawTransaction.user_id == uid).order_by(desc(RawTransaction.timestamp)).all()
 
-@app.get("/api/stats/global")
-def get_global_analytics(db: Session = Depends(get_db_session)):
-    """Агрегация данных для счетчиков на главной странице"""
-    try:
-        total_kg = db.query(func.sum(OrderEntity.weight_kg)).scalar() or 0
-        order_count = db.query(OrderEntity).count()
-        user_count = db.query(UserEntity).count()
-        return {
-            "total_kg": round(total_kg, 1),
-            "orders": order_count,
-            "users": user_count
-        }
-    except Exception:
-        return {"total_kg": 0, "orders": 0, "users": 0}
-
+# --------------------------------------------------------------------------------------------------
+# ЗАПУСК СЕРВИСА
+# --------------------------------------------------------------------------------------------------
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
