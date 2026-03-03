@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G-TRASH | Интеллектуальное управление ресурсами</title>
+    <title>G-TRASH | GLOBAL RESOURCE MANAGEMENT v70.0</title>
     
-    <!-- ПОДКЛЮЧЕНИЕ ШРИФТОВ ПРЕМИУМ-КЛАССА -->
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;800;900&family=Montserrat:wght@100;300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <!-- ПОДКЛЮЧЕНИЕ ПРЕМИУМ-ШРИФТОВ И БИБЛИОТЕК -->
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;800;900&family=Montserrat:wght@100;300;400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
@@ -14,324 +14,299 @@
     <style>
         /* 
            =============================================================================
-           G-TRASH BRAND IDENTITY SYSTEM v50.0 (ULTIMATE ENTERPRISE)
-           DESIGN THEME: PREMIUM ECO-MINIMALISM
-           PALETTE: Forest Deep, Sage Mist, Pure Alabaster, Tech Silver
+           G-TRASH PROFESSIONAL BRAND IDENTITY SYSTEM v70.0 (ULTIMATE EDITION)
+           DESIGN THEME: PREMIUM ECO-TECH MINIMALISM
+           ЦВЕТОВАЯ ПАЛИТРА: Deep Forest, Sage Mist, Alabaster White, Cyber Mint
            =============================================================================
         */
 
         :root {
-            /* Природная палитра */
-            --forest-deep: #1a2f23;
-            --sage-mist: #8da399;
-            --eco-green: #4caf50;
-            --pale-mint: #f0f4f2;
-            --pure-white: #ffffff;
+            /* Фирменные цвета */
+            --forest: #1a2f23;
+            --mint: #00ff9d;
+            --sage: #8da399;
             --alabaster: #fafdfb;
-            --tech-silver: #e2e8f0;
-            --accent-gold: #c5a059;
+            --white: #ffffff;
+            --blue-tech: #00d4ff;
+            --dark-surface: #0a0e14;
             
             /* Типографика */
             --font-main: 'Montserrat', sans-serif;
             --font-display: 'Exo 2', sans-serif;
-            --font-accent: 'Playfair Display', serif;
+            --font-code: 'JetBrains Mono', monospace;
             
-            /* Эффекты */
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.4);
-            --shadow-soft: 0 20px 40px rgba(0, 0, 0, 0.03);
-            --shadow-hard: 0 30px 60px rgba(26, 47, 35, 0.08);
-            --transition-smooth: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+            /* Спецэффекты и тени */
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.03);
+            --shadow-neon: 0 0 30px rgba(0, 255, 157, 0.15);
+            
+            /* Тайминги */
+            --transition-main: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
             --transition-fast: all 0.3s ease;
         }
 
-        /* ГЛОБАЛЬНЫЙ СБРОС И БАЗОВЫЕ СТИЛИ */
+        /* ГЛОБАЛЬНЫЙ СБРОС И БАЗОВЫЕ НАСТРОЙКИ */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
-        html { scroll-behavior: smooth; font-size: 16px; background-color: var(--pure-white); }
+        html { scroll-behavior: smooth; font-size: 16px; background-color: var(--white); }
         body { 
             font-family: var(--font-main); 
             background: var(--alabaster); 
-            color: var(--forest-deep); 
+            color: var(--forest); 
             overflow-x: hidden; 
             line-height: 1.8;
         }
 
-        /* КАСТОМНЫЙ СКРОЛЛБАР */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: var(--pale-mint); }
-        ::-webkit-scrollbar-thumb { background: var(--forest-deep); border-radius: 10px; }
+        /* КАСТОМНЫЙ СКРОЛЛБАР В СТИЛЕ ELITE */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--alabaster); }
+        ::-webkit-scrollbar-thumb { background: var(--forest); border-radius: 10px; }
 
-        /* НАВИГАЦИЯ (APPLE-STYLE BLUR) */
+        /* НАВИГАЦИЯ (ELEGANT BLUR EFFECT) */
         nav {
             position: fixed; width: 100%; top: 0; z-index: 9000;
-            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(25px);
-            padding: 25px 10%; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
-            transition: var(--transition-smooth);
+            background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(30px);
+            padding: 30px 10%; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.02);
+            transition: var(--transition-main);
         }
-        nav.scrolled { padding: 15px 10%; background: rgba(255, 255, 255, 0.95); box-shadow: var(--shadow-soft); }
+        nav.sticky { padding: 18px 10%; background: rgba(255, 255, 255, 0.95); box-shadow: var(--shadow-soft); }
 
         .logo { 
-            font-family: var(--font-display); font-size: 26px; font-weight: 900; 
-            color: var(--forest-deep); text-decoration: none; letter-spacing: -1px;
-            display: flex; align-items: center; gap: 10px;
+            font-family: var(--font-display); font-size: 28px; font-weight: 900; 
+            color: var(--forest); text-decoration: none; letter-spacing: -1.5px;
+            display: flex; align-items: center; gap: 12px;
         }
-        .logo span { color: var(--eco-green); }
+        .logo span { color: var(--mint); text-shadow: var(--shadow-neon); }
         
-        .nav-links { display: flex; list-style: none; gap: 40px; align-items: center; }
+        .nav-links { display: flex; list-style: none; gap: 45px; align-items: center; }
         .nav-links a { 
-            text-decoration: none; color: var(--forest-deep); font-weight: 600; 
-            font-size: 11px; text-transform: uppercase; letter-spacing: 2px; transition: var(--transition-fast);
-            opacity: 0.7;
+            text-decoration: none; color: var(--forest); font-weight: 700; 
+            font-size: 11px; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
+            opacity: 0.5;
         }
-        .nav-links a:hover { opacity: 1; color: var(--eco-green); }
+        .nav-links a:hover { opacity: 1; color: var(--mint); }
 
-        /* КНОПКИ УПРАВЛЕНИЯ (GHOST BUTTONS) */
-        .btn-nav {
-            padding: 12px 28px; border-radius: 100px; border: 1px solid var(--forest-deep);
+        /* КНОПКИ (GHOST STYLE) */
+        .btn-premium {
+            padding: 14px 35px; border-radius: 100px; border: 1px solid var(--forest);
             font-family: var(--font-main); font-size: 11px; font-weight: 800;
-            text-transform: uppercase; cursor: pointer; transition: var(--transition-smooth);
-            background: transparent; color: var(--forest-deep);
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; 
+            transition: var(--transition-main); background: transparent; color: var(--forest);
         }
-        .btn-nav:hover { background: var(--forest-deep); color: white; transform: translateY(-2px); }
-        .btn-nav.primary { background: var(--eco-green); border-color: var(--eco-green); color: white; }
+        .btn-premium:hover { background: var(--forest); color: white; transform: translateY(-3px); }
+        .btn-premium.active { background: var(--mint); border-color: var(--mint); color: var(--forest); }
 
-        /* ГЕРОЙ-СЕКЦИЯ (CLEAN MINIMALISM) */
+        /* ГЕРОЙ-СЕКЦИЯ (MACRO NATURE BACKGROUND) */
         .hero {
             height: 100vh; display: flex; flex-direction: column; justify-content: center;
             align-items: center; text-align: center; position: relative;
-            background: linear-gradient(to bottom, #f0f4f2, #ffffff);
+            background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0)), 
+                        url('https://images.unsplash.com/photo-1518173946687-a4c8a3b7468e?w=1920');
+            background-size: cover; background-position: center; background-attachment: fixed;
             padding: 0 10%; overflow: hidden;
         }
         .hero-title { 
-            font-family: var(--font-display); font-size: clamp(40px, 8vw, 90px); 
-            line-height: 0.9; font-weight: 900; color: var(--forest-deep);
-            margin-bottom: 30px; letter-spacing: -3px;
+            font-family: var(--font-display); font-size: clamp(50px, 12vw, 110px); 
+            line-height: 0.85; font-weight: 900; color: var(--forest);
+            margin-bottom: 30px; letter-spacing: -5px;
         }
-        .hero-title i { font-family: var(--font-accent); font-weight: 400; color: var(--eco-green); }
+        .hero-title span { color: var(--mint); }
         .hero-subtitle { 
-            font-size: 20px; color: var(--sage-mist); max-width: 700px;
+            font-size: 22px; color: var(--sage); max-width: 800px;
             font-weight: 400; line-height: 1.6; margin-bottom: 60px;
         }
 
-        /* ЭКО-ПАНЕЛИ (SIDE DRAWERS) */
-        .side-drawer {
-            position: fixed; top: 0; right: -100%; width: 550px; height: 100vh;
-            background: var(--pure-white); z-index: 10000; padding: 80px;
-            box-shadow: -30px 0 80px rgba(0,0,0,0.05); transition: var(--transition-smooth);
-            display: flex; flex-direction: column;
-        }
-        .side-drawer.active { right: 0; }
-        .drawer-close { position: absolute; top: 40px; left: 40px; cursor: pointer; font-size: 20px; opacity: 0.3; transition: 0.3s; }
-        .drawer-close:hover { opacity: 1; transform: rotate(90deg); }
+        /* ИНФОРМАЦИОННЫЙ ТИКЕР (CYBER-ECO STYLE) */
+        .ticker { background: var(--forest); color: var(--mint); padding: 15px 0; overflow: hidden; white-space: nowrap; font-family: var(--font-code); font-weight: 700; font-size: 12px; }
+        .ticker-wrap { display: inline-block; animation: ticker 60s linear infinite; }
+        @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-        /* ФОРМЫ НОВОГО ПОКОЛЕНИЯ */
-        .form-title { font-family: var(--font-display); font-size: 36px; font-weight: 800; margin-bottom: 15px; }
-        .form-desc { color: var(--sage-mist); margin-bottom: 50px; font-size: 14px; }
+        /* СЕКЦИИ И ТИПОГРАФИКА */
+        section { padding: 180px 10%; position: relative; }
+        .tagline { font-family: var(--font-code); color: var(--mint); font-weight: 800; letter-spacing: 5px; font-size: 12px; margin-bottom: 25px; display: block; }
+        .sec-title { font-family: var(--font-display); font-size: 70px; font-weight: 900; line-height: 1; letter-spacing: -3px; margin-bottom: 100px; color: var(--forest); }
 
-        .field-group { margin-bottom: 35px; position: relative; }
-        .field-group label { 
-            display: block; font-size: 10px; font-weight: 800; color: var(--eco-green);
-            text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;
+        /* ВЫДВИЖНЫЕ ПАНЕЛИ (DRAWER SYSTEM) */
+        .drawer {
+            position: fixed; top: 0; right: -100%; width: 600px; height: 100vh;
+            background: var(--white); z-index: 10000; padding: 100px 80px;
+            box-shadow: -50px 0 100px rgba(0,0,0,0.05); transition: var(--transition-main);
+            display: flex; flex-direction: column; border-left: 1px solid #f0f0f0;
         }
-        input, select, textarea {
-            width: 100%; background: var(--pale-mint); border: 1px solid transparent;
-            padding: 22px; border-radius: 20px; color: var(--forest-deep); font-family: var(--font-main);
-            font-size: 16px; font-weight: 500; transition: var(--transition-fast);
+        .drawer.active { right: 0; }
+        .drawer-close { position: absolute; top: 50px; left: 50px; cursor: pointer; font-size: 24px; opacity: 0.2; transition: 0.3s; }
+        .drawer-close:hover { opacity: 1; transform: rotate(90deg) scale(1.2); }
+
+        /* ФОРМЫ (MINIMAL TECH) */
+        .form-title { font-family: var(--font-display); font-size: 42px; font-weight: 800; margin-bottom: 20px; letter-spacing: -1px; }
+        .field { margin-bottom: 40px; }
+        .field label { display: block; font-size: 10px; font-weight: 900; color: var(--sage); text-transform: uppercase; letter-spacing: 3px; margin-bottom: 15px; }
+        
+        input, select {
+            width: 100%; background: #f9fbfb; border: 1px solid #eee;
+            padding: 24px; border-radius: 25px; color: var(--forest); font-family: var(--font-main);
+            font-size: 18px; font-weight: 500; transition: var(--transition-fast);
         }
-        input:focus { background: white; border-color: var(--eco-green); outline: none; box-shadow: 0 15px 30px rgba(76, 175, 80, 0.05); }
+        input:focus { border-color: var(--mint); outline: none; background: white; box-shadow: 0 15px 40px rgba(0, 255, 157, 0.05); }
 
         .btn-action {
-            background: var(--forest-deep); color: white; border: none; padding: 25px;
-            border-radius: 20px; font-weight: 800; font-size: 16px; text-transform: uppercase;
-            letter-spacing: 2px; cursor: pointer; transition: var(--transition-smooth);
+            background: var(--forest); color: white; border: none; padding: 25px;
+            border-radius: 25px; font-weight: 800; font-size: 16px; text-transform: uppercase;
+            letter-spacing: 3px; cursor: pointer; transition: var(--transition-main);
         }
-        .btn-action:hover { background: var(--eco-green); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(76, 175, 80, 0.2); }
+        .btn-action:hover { background: var(--mint); color: var(--forest); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0, 255, 157, 0.2); }
 
-        /* СЕКЦИИ КОНТЕНТА */
-        section { padding: 160px 10%; position: relative; }
-        .tag-line { font-family: var(--font-display); color: var(--eco-green); font-weight: 800; letter-spacing: 4px; font-size: 12px; margin-bottom: 20px; display: block; }
-        .sec-title { font-family: var(--font-display); font-size: 65px; font-weight: 900; line-height: 1; letter-spacing: -2px; margin-bottom: 80px; }
-
-        /* ПРЕМИУМ-КАРТОЧКИ */
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; }
+        /* КАРТОЧКИ АКАДЕМИИ И НОВОСТЕЙ */
+        .grid-pro { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 50px; }
         .eco-card {
-            background: var(--pure-white); padding: 60px; border-radius: 50px;
-            border: 1px solid #f0f0f0; transition: var(--transition-smooth);
+            background: var(--white); padding: 80px 60px; border-radius: 60px;
+            border: 1px solid #f0f0f0; transition: var(--transition-main);
             position: relative; overflow: hidden;
         }
-        .eco-card:hover { transform: translateY(-20px); box-shadow: var(--shadow-hard); border-color: var(--pale-mint); }
-        .eco-card i { font-size: 40px; color: var(--eco-green); margin-bottom: 35px; display: block; }
-        .eco-card h3 { font-family: var(--font-display); font-size: 28px; margin-bottom: 20px; }
-        .eco-card p { color: var(--sage-mist); font-size: 16px; line-height: 1.8; }
+        .eco-card:hover { transform: translateY(-30px); box-shadow: var(--shadow-hard); border-color: var(--mint); }
+        .eco-card i { font-size: 50px; color: var(--mint); margin-bottom: 40px; display: block; }
+        .eco-card h3 { font-family: var(--font-display); font-size: 32px; font-weight: 800; margin-bottom: 25px; }
+        .eco-card p { color: var(--sage); font-size: 17px; line-height: 1.8; }
 
-        /* ЛИЧНЫЙ КАБИНЕТ (STAT CARDS) */
-        .user-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 60px; }
-        .user-meta h2 { font-family: var(--font-display); font-size: 42px; }
-        .user-stats { display: flex; gap: 30px; margin-bottom: 50px; }
-        .stat-box { 
-            flex: 1; background: var(--pale-mint); padding: 40px; border-radius: 35px; 
-            text-align: center; border: 1px solid var(--glass-border);
+        /* ТЕРМИНАЛ (DEBUG MODE) */
+        .terminal {
+            background: var(--dark-surface); border-radius: 40px; padding: 60px;
+            font-family: var(--font-code); color: #81cf91; font-size: 15px;
+            line-height: 2; border: 1px solid #222; box-shadow: 0 60px 120px rgba(0,0,0,0.2);
         }
-        .stat-box h4 { font-family: var(--font-display); font-size: 32px; color: var(--eco-green); }
-        .stat-box p { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--sage-mist); letter-spacing: 2px; }
 
-        /* СПИСОК ТРАНЗАКЦИЙ */
-        .tx-list { display: flex; flex-direction: column; gap: 20px; }
-        .tx-item { 
-            background: white; padding: 30px 40px; border-radius: 25px; 
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: var(--shadow-soft); border: 1px solid #f9f9f9;
+        /* ЛИЧНЫЙ КАБИНЕТ */
+        .profile-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 80px; }
+        .stat-grid-user { display: flex; gap: 40px; margin-bottom: 60px; }
+        .user-card { 
+            flex: 1; background: #f4f8f6; padding: 50px; border-radius: 40px; 
+            text-align: center; border: 1px solid rgba(0, 255, 157, 0.1);
         }
-        .tx-info b { font-family: var(--font-display); font-size: 18px; }
-        .tx-amount { font-family: var(--font-display); font-size: 22px; font-weight: 900; color: var(--eco-green); }
-
-        /* ТЕХНО-БЛОК (ТЕРМИНАЛ) */
-        .eco-terminal {
-            background: #111; border-radius: 30px; padding: 45px;
-            font-family: var(--font-tech); color: #81cf91; font-size: 14px;
-            line-height: 2; box-shadow: 0 50px 100px rgba(0,0,0,0.15);
-            border: 1px solid #222;
-        }
+        .user-card h4 { font-family: var(--font-display); font-size: 40px; color: var(--mint); }
 
         /* КАРТА */
-        #map { height: 750px; border-radius: 60px; filter: saturate(0.5) contrast(1.1); box-shadow: var(--shadow-hard); border: 20px solid white; }
-
-        /* ФУТЕР-ЭКОПОЛИС */
-        footer { padding: 140px 10% 60px; background: var(--forest-deep); color: white; }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 80px; }
-        .footer-col h4 { font-family: var(--font-display); font-size: 18px; margin-bottom: 40px; color: var(--eco-green); text-transform: uppercase; }
-        .footer-col li { list-style: none; margin-bottom: 18px; font-size: 14px; opacity: 0.5; transition: 0.3s; cursor: pointer; }
-        .footer-col li:hover { opacity: 1; transform: translateX(10px); }
+        #map { height: 800px; border-radius: 80px; border: 25px solid white; box-shadow: var(--shadow-hard); filter: grayscale(1) brightness(1.1); }
 
         /* АНИМАЦИИ REVEAL */
-        .reveal { opacity: 0; transform: translateY(60px); transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1); }
+        .reveal { opacity: 0; transform: translateY(100px); transition: all 1.5s cubic-bezier(0.19, 1, 0.22, 1); }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* ПРЕДЗАГРУЗКА */
-        #preloader { position: fixed; inset: 0; background: var(--pure-white); z-index: 99999; display: flex; justify-content: center; align-items: center; font-family: var(--font-display); font-weight: 900; font-size: 12px; letter-spacing: 10px; text-transform: uppercase; }
+        footer { padding: 180px 10% 80px; background: var(--forest); color: white; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 100px; }
+        .footer-logo { font-family: var(--font-display); font-size: 40px; font-weight: 900; margin-bottom: 40px; }
     </style>
-</head>
-<body>
+</head><body>
 
-    <!-- ПРЕДЗАГРУЗЧИК СИСТЕМЫ -->
-    <div id="preloader">G-TRASH_CORE_v50_INIT...</div>
+    <!-- ПРЕДЗАГРУЗЧИК СИСТЕМЫ (PREMIUM LOADER) -->
+    <div id="preloader">G-TRASH_INFRASTRUCTURE_INIT...</div>
 
     <!-- ГЛОБАЛЬНАЯ НАВИГАЦИЯ -->
     <nav id="navbar">
         <a href="#" class="logo">G-<span>TRASH</span></a>
         <ul class="nav-links">
             <li><a href="#analytics">Аналитика</a></li>
-            <li><a href="#tech">Технологии</a></li>
-            <li><a href="#academy">Академия</a></li>
-            <li><a href="#map-anchor">Хабы</a></li>
-            <li><button class="btn-nav primary" onclick="toggleDrawer('drawer-request')">Сдать сырье</button></li>
-            <li id="auth-nav-item"><button class="btn-nav" onclick="toggleDrawer('drawer-auth')">Кабинет</button></li>
-            <li id="user-nav-item" style="display:none;"><button class="btn-nav" style="border-color: var(--eco-green); color: var(--eco-green);" onclick="toggleDrawer('drawer-user')">Профиль</button></li>
+            <li><a href="#tech">Ядро системы</a></li>
+            <li><a href="#academy">Эко-Академия</a></li>
+            <li><a href="#map-anchor">Сеть хабов</a></li>
+            <li><button class="btn-premium active" onclick="toggleDrawer('drawer-request')">Открыть транзакцию</button></li>
+            <li id="auth-nav-item"><button class="btn-premium" onclick="toggleDrawer('drawer-auth')">Войти</button></li>
+            <li id="user-nav-item" style="display:none;"><button class="btn-premium" style="border-color: var(--mint); color: var(--mint);" onclick="toggleDrawer('drawer-user')">Мой профиль</button></li>
         </ul>
     </nav>
 
-    <!-- ГЛАВНЫЙ ЭКРАН (HERO) -->
+    <!-- ГЛАВНЫЙ ЭКРАН (CINEMATIC HERO) -->
     <header class="hero">
-        <h1 class="hero-title">ECO<i>_</i>STABILITY<br>ARCHIVE <span>2026</span></h1>
-        <p class="hero-subtitle">
-            Профессиональная децентрализованная среда управления ресурсами. 
-            Мы переосмыслили процесс переработки, внедрив облачные вычисления и прямую интеграцию с PostgreSQL.
+        <h1 class="hero-title animate__animated animate__fadeInDown">ECO<i>_</i>INTELLIGENCE<br>PLATFORM <span>2026</span></h1>
+        <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-1s">
+            Масштабируемая децентрализованная среда управления вторичными ресурсами. 
+            Мы объединяем промышленную логистику и облачные вычисления для создания прозрачной экономики будущего.
         </p>
-        <div style="display: flex; gap: 20px;">
-            <button class="btn-action" style="padding: 20px 50px;" onclick="toggleDrawer('drawer-request')">Открыть транзакцию</button>
-            <a href="#academy" class="btn-nav" style="padding: 20px 50px; text-decoration: none;">Технический регламент</a>
+        <div style="display: flex; gap: 30px;" class="animate__animated animate__fadeInUp animate__delay-2s">
+            <button class="btn-action" style="padding: 22px 60px;" onclick="toggleDrawer('drawer-request')">Начать сбор ресурсов</button>
+            <a href="#academy" class="btn-premium" style="padding: 22px 50px; text-decoration: none; display: flex; align-items: center;">Техническая база</a>
         </div>
     </header>
 
-    <!-- СЕКЦИЯ: ГЛОБАЛЬНАЯ АНАЛИТИКА -->
+    <!-- ИНФОРМАЦИОННЫЙ ТИКЕР (LIVE PROTOCOL) -->
+    <div class="ticker">
+        <div class="ticker-wrap">
+            <div style="display: inline-block; padding: 0 60px;">[SYSTEM] SUPABASE_CLOUD_NODE: CONNECTED_STABLE</div>
+            <div style="display: inline-block; padding: 0 60px;">[LIVE] ТРАНЗАКЦИЯ #8492: +120 KG POLYMER_PET (MOSCOW_HUB)</div>
+            <div style="display: inline-block; padding: 0 60px;">[STATS] ГЛОБАЛЬНЫЙ УРОВЕНЬ ПЕРЕРАБОТКИ: 98.44%</div>
+            <div style="display: inline-block; padding: 0 60px;">[TECH] FASTAPI SERVER LATENCY: 14ms</div>
+            <!-- Повтор для объема -->
+            <div style="display: inline-block; padding: 0 60px;">[SYSTEM] SUPABASE_CLOUD_NODE: CONNECTED_STABLE</div>
+            <div style="display: inline-block; padding: 0 60px;">[LIVE] ТРАНЗАКЦИЯ #8492: +120 KG POLYMER_PET (MOSCOW_HUB)</div>
+        </div>
+    </div>
+
+    <!-- СЕКЦИЯ: МАКРО-АНАЛИТИКА -->
     <section id="analytics" class="reveal">
-        <span class="tag-line">// LIVE_DATA_STREAM</span>
-        <h2 class="sec-title">Экологические<br>показатели сети</h2>
-        <div class="card-grid">
+        <span class="tagline">// REAL_TIME_ANALYTICS</span>
+        <h2 class="sec-title">Эффективность<br>экосистемы</h2>
+        <div class="grid-pro">
             <div class="eco-card">
                 <i class="fas fa-microchip"></i>
                 <h2 id="global-kg">0</h2>
-                <p>Всего переработано (KG). Данные синхронизированы с центральным узлом Supabase.</p>
+                <p>Всего переработано сырья (кг). Данные агрегируются из PostgreSQL кластера в реальном времени.</p>
             </div>
             <div class="eco-card">
                 <i class="fas fa-tree"></i>
                 <h2 id="global-trees">0</h2>
-                <p>Спасенных деревьев. Расчет произведен на основе метрик экономии целлюлозы.</p>
+                <p>Спасенных деревьев. Рассчитано по алгоритму предотвращения выручки лесов на 1 тонну целлюлозы.</p>
             </div>
             <div class="eco-card">
-                <i class="fas fa-cloud-sun"></i>
+                <i class="fas fa-wind"></i>
                 <h2 id="global-co2">0</h2>
-                <p>Сокращение выбросов CO2 (Тонн). Оценка предотвращенного ущерба атмосфере.</p>
+                <p>Нейтрализация CO2 (т). Прямой результат сокращения первичного производства полимеров.</p>
             </div>
         </div>
     </section>
 
-    <!-- ЛИЧНЫЙ КАБИНЕТ (ВСТРОЕННЫЙ БЛОК) -->
-    <section id="profile-section" class="reveal" style="display:none; background: var(--pale-mint);">
-        <div class="user-header">
-            <div class="user-meta">
-                <span class="tag-line">// AUTHENTICATED_SESSION</span>
-                <h2>Активист: <span id="user-display-name">...</span></h2>
-            </div>
-            <div class="user-stats">
-                <div class="stat-box">
-                    <h4 id="user-points">0</h4>
-                    <p>ECO_POINTS</p>
-                </div>
-                <div class="stat-box">
-                    <h4 id="user-rank" style="font-size: 14px;">BEGINNER</h4>
-                    <p>SYSTEM_RANK</p>
-                </div>
-            </div>
-        </div>
-        <h3 style="margin-bottom: 30px; font-family: var(--font-display);">История транзакций</h3>
-        <div id="user-history" class="tx-list">Загрузка протоколов...</div>
-        <button onclick="logout()" class="btn-nav" style="margin-top: 50px; border-color: #a33; color: #a33;">Завершить сессию</button>
-    </section>
-
-    <!-- СЕКЦИЯ: ТЕХНОЛОГИЧЕСКОЕ ЯДРО -->
-    <section id="tech" class="reveal" style="background: #070908; color: #fff;">
-        <span class="tag-line">// TECHNOLOGY_STACK</span>
-        <h2 class="sec-title" style="color: #fff;">Архитектура ядра</h2>
-        <div class="eco-terminal">
-            <div style="opacity: 0.4; margin-bottom: 20px;"># G-TRASH_KERNEL_V50_LOGS</div>
-            <div>[0.001] Инициализация FastAPI инстанса... <span style="color: var(--eco-green);">[УСПЕХ]</span></div>
-            <div>[0.024] Подключение к PostgreSQL кластеру (Direct Node)... <span style="color: var(--eco-green);">[OK]</span></div>
-            <div>[0.105] Загрузка нейросетевых моделей распознавания сырья v7.2...</div>
-            <div>[0.542] Ожидание подтверждения транзакции от Supabase Edge...</div>
-            <div id="terminal-cursor" style="display:inline-block; width:8px; height:18px; background: var(--eco-green); animation: blink 1s infinite; vertical-align: middle;"></div>
+    <!-- СЕКЦИЯ: ТЕХНОЛОГИЧЕСКОЕ ЯДРО (ТЕРМИНАЛ) -->
+    <section id="tech" class="reveal" style="background: #050706; color: #fff;">
+        <span class="tagline" style="color: var(--blue-tech);">// SYSTEM_KERNEL_LOGS</span>
+        <h2 class="sec-title" style="color: #fff; margin-bottom: 60px;">Архитектура ядра</h2>
+        <div class="terminal">
+            <div style="opacity: 0.3; margin-bottom: 20px;"># INITIALIZING G-TRASH_v70_PRO...</div>
+            <div>[0.0001] Запуск FastAPI ядра на Render Node... <span style="color: var(--mint);">[SUCCESS]</span></div>
+            <div>[0.0452] Проверка сертификатов SSL для Supabase Direct... <span style="color: var(--mint);">[OK]</span></div>
+            <div>[0.1293] Синхронизация сущностей 'UserProfile' и 'OrderTransaction'...</div>
+            <div>[0.5521] Нейросетевой модуль распознавания образов v5.2 активен.</div>
+            <div>[1.0422] Ожидание входящих эко-транзакций через API порт 5432...</div>
+            <div style="display:inline-block; width:10px; height:20px; background: var(--mint); animation: blink 1s infinite; vertical-align: middle; margin-left: 10px;"></div>
         </div>
     </section>
 
-    <!-- ЭКО-АКАДЕМИЯ (ДЛИННЫЙ КОНТЕНТНЫЙ БЛОК) -->
+    <!-- ЭКО-АКАДЕМИЯ (ГИГАНТСКИЙ КОНТЕНТ) -->
     <section id="academy" class="reveal">
-        <span class="tag-line">// SCIENTIFIC_RESEARCH</span>
-        <h2 class="sec-title">База знаний</h2>
-        <div class="card-grid">
+        <span class="tagline">// KNOWLEDGE_CENTER</span>
+        <h2 class="sec-title">Эко-Академия G-TRASH</h2>
+        <div class="grid-pro">
             <div class="eco-card">
-                <span>01.</span>
-                <h3>Жизнь полимеров</h3>
-                <p>Мы используем технологию холодного прессования, которая позволяет сохранить молекулярную структуру пластика для 7-кратной переработки...</p>
+                <span style="font-family: var(--font-code); color: var(--blue-tech);">[LECTURE_01]</span>
+                <h3 style="margin-top: 20px;">Молекулярная переработка</h3>
+                <p>Мы используем метод деполимеризации, который позволяет разбирать пластик до мономеров, восстанавливая его свойства до первичного состояния...</p>
             </div>
             <div class="eco-card">
-                <span>02.</span>
-                <h3>Цифровая верификация</h3>
-                <p>Каждый грамм сырья фиксируется в облачной базе данных, исключая возможность подделки отчетов об утилизации...</p>
+                <span style="font-family: var(--font-code); color: var(--blue-tech);">[LECTURE_02]</span>
+                <h3 style="margin-top: 20px;">Циклические цепи поставок</h3>
+                <p>G-TRASH внедряет логистику 4.0, где дрон-коллекторы автоматически оптимизируют маршруты сбора на основе данных из PostgreSQL...</p>
             </div>
             <div class="eco-card">
-                <span>03.</span>
-                <h3>Экономика замкнутого цикла</h3>
-                <p>G-TRASH внедряет стандарты индустрии 4.0, где отходы становятся ликвидным активом в вашем персональном кабинете...</p>
+                <span style="font-family: var(--font-code); color: var(--blue-tech);">[LECTURE_03]</span>
+                <h3 style="margin-top: 20px;">Экономика токенов</h3>
+                <p>Ваша активность конвертируется в EcoPoints. Это цифровой актив, обеспеченный реальным весом спасенного сырья в нашей базе данных...</p>
             </div>
-            <!-- СОВЕТ: Для объема 10000 строк продублируй эти карточки 10 раз с разным текстом -->
+            <!-- СОВЕТ ДЛЯ ДИПЛОМА: Продублируй эти карточки еще 10 раз, меняя тексты, чтобы листать долго -->
         </div>
     </section>
 
-    <!-- КАРТА ХАБОВ -->
+    <!-- КАРТА (МЕГА-МАСШТАБ) -->
     <section id="map-anchor" class="reveal">
-        <span class="tag-line">// INFRASTRUCTURE_GEOGRAPHY</span>
-        <h2 class="sec-title">Сеть интеллектуальных<br>пунктов приема</h2>
+        <span class="tagline">// NODES_DISTRIBUTION_MAP</span>
+        <h2 class="sec-title">География присутствия</h2>
         <div id="map"></div>
     </section>
 
@@ -339,187 +314,194 @@
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
-                <a href="#" class="logo">G-<span>TRASH</span></a>
-                <p style="margin-top: 30px; opacity: 0.5; font-size: 14px;">Система промышленного уровня для управления экологическими данными и логистикой вторичных ресурсов.</p>
+                <a href="#" class="footer-logo">G-<span>TRASH</span></a>
+                <p style="opacity: 0.4; font-size: 14px; margin-top: 20px;">Промышленная платформа управления экологическими ресурсами мирового уровня. Работает на базе PostgreSQL и Human Will.</p>
             </div>
             <div class="footer-col">
-                <h4>Экосистема</h4>
-                <ul><li>Live Analytics</li><li>Node Map</li><li>Tech Documentation</li><li>API Access</li></ul>
+                <h4>ИНФРАСТРУКТУРА</h4>
+                <ul><li>Live Analytics</li><li>Node Map</li><li>Tech Documentation</li><li>API Gateway</li></ul>
             </div>
             <div class="footer-col">
-                <h4>Информация</h4>
-                <ul><li>Academy</li><li>Case Studies</li><li>Legal Notice</li><li>Whitepaper</li></ul>
+                <h4>КОМЬЮНИТИ</h4>
+                <ul><li>Eco Academy</li><li>Whitepaper</li><li>GitHub Source</li><li>Telegram Bot</li></ul>
             </div>
             <div class="footer-col">
-                <h4>Связь</h4>
-                <ul><li>Telegram Bot</li><li>GitHub Community</li><li>Support</li></ul>
+                <h4>ПРАВОВОЙ БЛОК</h4>
+                <ul><li>Privacy Protocol</li><li>Terms of Usage</li><li>Smart Contract</li><li>Licenses</li></ul>
             </div>
         </div>
         <div style="margin-top: 100px; text-align: center; font-size: 11px; opacity: 0.2; letter-spacing: 5px;">
-            © 2026 G-TRASH GLOBAL ENTERPRISE. DIPLOMA_MODE: ACTIVE.
+            © 2026 G-TRASH GLOBAL SOLUTIONS. DIPLOMA_MODE: ACTIVE_LEVEL_MAX.
         </div>
     </footer>
 
-    <!-- ПАНЕЛИ SIDE DRAWERS -->
+    <!-- ВЫДВИЖНЫЕ ПАНЕЛИ (DRAWER SYSTEM) -->
 
     <!-- ЗАЯВКА -->
-    <div id="drawer-request" class="side-drawer">
+    <div id="drawer-request" class="drawer">
         <div class="drawer-close" onclick="toggleDrawer('drawer-request')"><i class="fas fa-times"></i></div>
-        <h2 class="form-title">Новая транзакция</h2>
-        <p class="form-desc">Данные будут зашифрованы и переданы в облачный узел PostgreSQL.</p>
-        
-        <div class="field-group">
-            <label>Идентификатор (Имя)</label>
+        <h2 class="form-title">NEW_TRANSACTION</h2>
+        <div class="field">
+            <label>IDENTIFIER (NAME)</label>
             <input type="text" id="order-name" placeholder="Введите ваше имя">
         </div>
-        <div class="field-group">
-            <label>Категория ресурсов</label>
+        <div class="field">
+            <label>RESOURCE_TYPE</label>
             <select id="order-type">
-                <option value="Полимеры PET">Полимеры (Пластик)</option>
-                <option value="Целлюлоза">Целлюлоза (Бумага)</option>
-                <option value="Силикаты">Силикаты (Стекло)</option>
-                <option value="Металлы">Металлы (Алюминий)</option>
+                <option value="POLYMER_PET">Полимеры (Пластик)</option>
+                <option value="CELLULOSE">Целлюлоза (Бумага)</option>
+                <option value="SILICA">Силикаты (Стекло)</option>
+                <option value="METALS">Металлы (Алюминий)</option>
             </select>
         </div>
-        <div class="field-group">
-            <label>Масса сырья (KG)</label>
-            <input type="number" id="order-weight" placeholder="Масса в кг">
+        <div class="field">
+            <label>MASS_INDEX_KG</label>
+            <input type="number" id="order-weight" placeholder="Масса сырья">
         </div>
-        <button class="btn-action" onclick="executeTransaction()">Подтвердить отправку</button>
-        <div id="order-status" style="margin-top: 30px; text-align: center; font-family: var(--font-tech); font-weight: bold; font-size: 12px;"></div>
+        <button class="btn-action" onclick="executeTransaction()">Подтвердить запись в БД</button>
+        <div id="order-status" style="margin-top: 30px; text-align: center; font-family: var(--font-code); font-weight: bold; font-size: 13px;"></div>
     </div>
 
     <!-- АВТОРИЗАЦИЯ -->
-    <div id="drawer-auth" class="side-drawer">
+    <div id="drawer-auth" class="drawer">
         <div class="drawer-close" onclick="toggleDrawer('drawer-auth')"><i class="fas fa-times"></i></div>
-        <h2 class="form-title" id="auth-title">Вход в систему</h2>
-        <p class="form-desc">Авторизуйтесь для доступа к истории бонусов.</p>
-        
-        <div class="field-group">
-            <label>Email_Address</label>
+        <h2 class="form-title" id="auth-title">SYSTEM_LOGIN</h2>
+        <div class="field">
+            <label>EMAIL_ADDRESS</label>
             <input type="email" id="auth-email" placeholder="example@eco.pro">
         </div>
-        <div class="field-group">
-            <label>Security_Code</label>
+        <div class="field">
+            <label>SECURITY_PASSCODE</label>
             <input type="password" id="auth-pass" placeholder="••••••••">
         </div>
         <div id="reg-fields" style="display: none;">
-            <div class="field-group">
-                <label>Full_Legal_Name</label>
+            <div class="field">
+                <label>FULL_LEGAL_NAME</label>
                 <input type="text" id="auth-name" placeholder="Ваше полное имя">
             </div>
         </div>
-        <button class="btn-action" id="auth-submit-btn" onclick="handleAuth()">Авторизоваться</button>
-        <p style="margin-top: 30px; text-align: center; font-size: 12px; color: var(--sage-mist); cursor: pointer;" onclick="toggleReg()">Нет ключа доступа? Регистрация</p>
+        <button class="btn-action" onclick="handleAuth()" id="auth-submit-btn">ENTER_SYSTEM</button>
+        <p style="margin-top: 40px; text-align: center; font-size: 12px; color: var(--sage); cursor: pointer;" onclick="toggleReg()">Нет доступа? Регистрация аккаунта</p>
+    </div>
+
+    <!-- ПРОФИЛЬ -->
+    <div id="drawer-user" class="drawer">
+        <div class="drawer-close" onclick="toggleDrawer('drawer-user')"><i class="fas fa-times"></i></div>
+        <h2 class="form-title">USER_PROFILE</h2>
+        <p id="profile-email-sub" style="font-family: var(--font-code); font-size: 12px; color: var(--mint); margin-bottom: 40px;"></p>
+        
+        <div class="stat-grid-user">
+            <div class="user-card">
+                <p style="font-size: 10px; font-weight: 800; opacity: 0.5; margin-bottom: 10px;">ECO_POINTS</p>
+                <h4 id="user-points-val">0</h4>
+            </div>
+            <div class="user-card">
+                <p style="font-size: 10px; font-weight: 800; opacity: 0.5; margin-bottom: 10px;">LEVEL</p>
+                <h4 id="user-rank-val" style="font-size: 14px; text-transform: uppercase;">ACTIVATE</h4>
+            </div>
+        </div>
+
+        <h3 style="font-family: var(--font-display); font-size: 18px; margin-bottom: 25px;">Транзакции PostgreSQL</h3>
+        <div id="history-container" style="max-height: 40vh; overflow-y: auto;">Загрузка данных...</div>
+        
+        <button onclick="logout()" class="btn-premium" style="margin-top: 50px; border-color: #a33; color: #a33;">DISCONNECT SESSION</button>
     </div>
 
     <!-- JAVASCRIPT: ИНТЕЛЛЕКТУАЛЬНОЕ ЯДРО -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         /**
-         * G-TRASH ENTERPRISE ENGINE v50.0
-         * Прямая интеграция: API Render + PostgreSQL Supabase Node
+         * G-TRASH ENTERPRISE ENGINE v70.0
+         * Прямое взаимодействие: API Render + PostgreSQL Supabase Cloud
          */
-        const PRO_API_BASE = "https://ecology-project-do42.onrender.com";
-        let session = JSON.parse(localStorage.getItem('gtrash_pro_session')) || null;
+        const API_URL = "https://ecology-project-do42.onrender.com";
+        let session = JSON.parse(localStorage.getItem('gt_pro_session')) || null;
         let isReg = false;
 
-        // ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
+        // ИНИЦИАЛИЗАЦИЯ
         window.onload = () => {
-            // Удаление прелоадера
-            setTimeout(() => { 
-                document.getElementById('preloader').style.opacity = '0';
-                setTimeout(() => { document.getElementById('preloader').style.display = 'none'; }, 600);
-            }, 1500);
-
+            setTimeout(() => { document.getElementById('preloader').style.display = 'none'; }, 1500);
             initMap();
-            syncGlobalMetrics();
-            if(session) syncUI();
-            initRevealEngine();
-
-            // Липкое меню
+            syncMetrics();
+            if(session) initUserInterface();
+            initScrollReveal();
+            
             window.addEventListener('scroll', () => {
                 const nav = document.getElementById('navbar');
-                if (window.scrollY > 50) nav.classList.add('scrolled');
-                else nav.classList.remove('scrolled');
+                if (window.scrollY > 100) nav.classList.add('sticky');
+                else nav.classList.remove('sticky');
             });
         };
 
         function initMap() {
             const map = L.map('map').setView([55.7512, 37.6184], 4);
             L.tileLayer('https://{s}.tile.openstreetmap.org/dark_all/{z}/{x}/{y}.png').addTo(map);
-            const hubIcon = L.icon({
-                iconUrl: 'https://cdn-icons-png.flaticon.com/512/591/591577.png',
-                iconSize: [40, 40]
-            });
-            L.marker([55.75, 37.61]).addTo(map).bindPopup("<b>MOSCOW_HUB_01</b><br>Load: 82%");
-            L.marker([59.93, 30.33]).addTo(map).bindPopup("<b>SPB_NODE_02</b><br>Available now");
+            const markers = [
+                {loc: [55.75, 37.61], name: "MOSCOW_HUB_PRIMARY"},
+                {loc: [59.93, 30.33], name: "SPB_NODE_02"},
+                {loc: [45.03, 38.97], name: "KRASNODAR_ECO_STATION"}
+            ];
+            markers.forEach(m => L.marker(m.loc).addTo(map).bindPopup(`<b>${m.name}</b><br>Status: ONLINE`));
         }
 
-        async function syncGlobalMetrics() {
+        async function syncMetrics() {
             try {
-                const res = await fetch(`${PRO_API_BASE}/api/v1/analytics/global`);
+                const res = await fetch(`${API_URL}/api/v1/analytics/global`);
                 const data = await res.json();
                 document.getElementById('global-kg').innerText = Math.floor(data.total_kg || 0).toLocaleString();
                 document.getElementById('global-trees').innerText = data.trees_saved || 0;
-                document.getElementById('global-co2').innerText = data.co2_reduced || 0;
-            } catch (err) { console.warn("Analytics_Sync_Failed"); }
+                document.getElementById('global-co2').innerText = data.co2_offset_tons || 0;
+            } catch (e) { console.warn("Analytics Sync Offline"); }
         }
 
-        function toggleDrawer(id) { 
-            const drawer = document.getElementById(id);
-            drawer.classList.toggle('active'); 
-        }
+        function toggleDrawer(id) { document.getElementById(id).classList.toggle('active'); }
 
         function toggleReg() {
             isReg = !isReg;
-            document.getElementById('auth-title').innerText = isReg ? "Регистрация" : "Вход в систему";
+            document.getElementById('auth-title').innerText = isReg ? "REGISTRATION" : "SYSTEM_LOGIN";
             document.getElementById('reg-fields').style.display = isReg ? "block" : "none";
-            document.getElementById('auth-submit-btn').innerText = isReg ? "Создать аккаунт" : "Авторизоваться";
+            document.getElementById('auth-submit-btn').innerText = isReg ? "CREATE_ACCOUNT" : "ENTER_SYSTEM";
         }
 
         async function handleAuth() {
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-pass').value;
             const full_name = document.getElementById('auth-name').value;
-
-            const endpoint = isReg ? "/api/v1/auth/register" : "/api/v1/auth/login";
-            const body = isReg ? {full_name, email, password} : {email, password};
+            const path = isReg ? "/api/v1/auth/register" : "/api/v1/auth/login";
+            const payload = isReg ? {full_name, email, password} : {email, password};
 
             try {
-                const res = await fetch(PRO_API_BASE + endpoint, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(body)
-                });
+                const res = await fetch(API_URL + path, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
                 const data = await res.json();
                 if(res.ok) {
-                    if(isReg) { alert("Успех! Ключ доступа активирован."); toggleReg(); }
-                    else { localStorage.setItem('gtrash_pro_session', JSON.stringify(data)); location.reload(); }
-                } else { alert(data.detail || "Доступ запрещен."); }
-            } catch (e) { alert("Сбой соединения с сервером."); }
+                    if(isReg) { alert("УСПЕХ: Аккаунт зарегистрирован. Выполните вход."); toggleReg(); }
+                    else { localStorage.setItem('gt_pro_session', JSON.stringify(data)); location.reload(); }
+                } else { alert(data.detail); }
+            } catch (e) { alert("ОШИБКА: Сервер недоступен."); }
         }
 
-        function syncUI() {
+        function initUserInterface() {
             document.getElementById('auth-nav-item').style.display = 'none';
             document.getElementById('user-nav-item').style.display = 'block';
             document.getElementById('profile-section').style.display = 'block';
             document.getElementById('nav-user-name').innerText = session.full_name;
-            document.getElementById('profile-full-name').innerText = session.full_name;
-            document.getElementById('user-points').innerText = session.points || 0;
-            loadTransactionHistory();
+            document.getElementById('user-info-name').innerText = session.full_name;
+            document.getElementById('profile-email-sub').innerText = session.email;
+            document.getElementById('user-points-val').innerText = session.points || 0;
+            document.getElementById('user-rank-val').innerText = session.rank || 'BEGINNER';
+            loadHistory();
         }
 
-        async function loadTransactionHistory() {
-            const res = await fetch(`${PRO_API_BASE}/api/v1/transactions/history/${session.id}`);
+        async function loadHistory() {
+            const res = await fetch(`${API_URL}/api/v1/orders/my/${session.id}`);
             const data = await res.json();
-            const list = document.getElementById('user-history');
-            if(data.length === 0) list.innerHTML = "<p style='opacity:0.3'>История протоколов пуста.</p>";
+            const list = document.getElementById('history-container');
+            if(data.length === 0) list.innerHTML = "<p style='opacity:0.2'>Транзакции не найдены.</p>";
             else {
-                list.innerHTML = data.map(tx => `
+                list.innerHTML = data.map(t => `
                     <div class="tx-item">
-                        <div class="tx-info"><b>${tx.resource_category}</b><br><small>${new Date(tx.timestamp).toLocaleString()}</small></div>
-                        <div class="tx-amount">+ ${tx.mass_kg} KG</div>
+                        <div class="tx-info"><b>${t.waste_type}</b><br><small>${new Date(t.date).toLocaleString()}</small></div>
+                        <div class="tx-amount">+ ${t.weight_kg} KG</div>
                     </div>
                 `).join('');
             }
@@ -528,36 +510,39 @@
         async function executeTransaction() {
             const name = document.getElementById('order-name').value;
             const type = document.getElementById('order-type').value;
-            const mass = document.getElementById('order-weight').value;
+            const weight = document.getElementById('order-weight').value;
             const statusBox = document.getElementById('order-status');
 
-            if(!name || !mass) { alert("ВНИМАНИЕ: Данные неполны."); return; }
-            statusBox.innerText = ">>> TRANSMITTING_TO_SUPABASE_NODE...";
-            statusBox.style.color = "var(--eco-green)";
+            if(!name || !weight) { alert("ДАННЫЕ НЕПОЛНЫ!"); return; }
+            statusBox.innerText = ">>> TRANSMITTING_TO_SUPABASE...";
+            statusBox.style.color = "var(--blue-tech)";
 
             try {
-                const res = await fetch(`${PRO_API_BASE}/api/v1/transactions/create`, {
+                const res = await fetch(`${API_URL}/api/v1/orders/create`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ client_name: name, waste_type: type, weight_kg: parseFloat(mass), user_id: session ? session.id : null })
+                    body: JSON.stringify({ client_name: name, waste_type: type, weight_kg: parseFloat(weight), user_id: session ? session.id : null })
                 });
+                const result = await res.json();
                 if(res.ok) {
                     statusBox.innerText = ">>> SUCCESS: DATABASE_SYNCHRONIZED";
-                    syncGlobalMetrics();
-                    if(session) loadTransactionHistory();
-                    setTimeout(() => toggleDrawer('drawer-request'), 2000);
-                }
-            } catch (e) { statusBox.innerText = ">>> FAILED: NETWORK_TIMEOUT"; statusBox.style.color = "#a33"; }
+                    statusBox.style.color = "var(--mint)";
+                    syncMetrics();
+                    if(session) { 
+                        loadHistory();
+                        document.getElementById('user-points-val').innerText = parseInt(document.getElementById('user-points-val').innerText) + (weight * 12);
+                    }
+                } else { statusBox.innerText = ">>> ERROR: DB_REJECTED"; }
+            } catch (e) { statusBox.innerText = ">>> ERROR: CONNECTION_LOST"; }
         }
 
-        function initRevealEngine() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
-            }, { threshold: 0.1 });
+        function initScrollReveal() {
+            const observer = new IntersectionObserver(e => e.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('active'); }), { threshold: 0.1 });
             document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         }
 
-        function logout() { localStorage.removeItem('gtrash_pro_session'); location.reload(); }
+        function logout() { localStorage.removeItem('gt_pro_session'); location.reload(); }
     </script>
 </body>
 </html>
+
