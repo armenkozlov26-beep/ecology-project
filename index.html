@@ -3,249 +3,317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G-TRASH | Эко-система будущего</title>
+    <title>G-TRASH | Экологическая Интеллектуальная Платформа</title>
     
-    <!-- ПОДКЛЮЧЕНИЕ ШРИФТОВ И ИКОНОК -->
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700;900&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Внешние зависимости -->
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;900&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         /* 
-           ЦЕНТРАЛЬНЫЙ СТИЛЕВОЙ МОДУЛЬ ПРОЕКТА G-TRASH
-           Версия: 7.0 (Дипломное издание)
+           G-TRASH ULTIMATE STYLESHEET 
+           Разработано для дипломного проекта
         */
         :root {
-            --primary-color: #00c853;
-            --primary-light: #69f0ae;
-            --secondary-color: #121212;
-            --accent-color: #ffab00;
-            --text-main: #2c3e50;
-            --text-muted: #7f8c8d;
-            --bg-light: #f4f7f6;
+            --primary: #00d26a;
+            --primary-dark: #00a854;
+            --dark: #12141d;
+            --bg: #f8f9fd;
+            --text: #2d3436;
             --white: #ffffff;
-            --shadow: 0 15px 35px rgba(0,0,0,0.1);
-            --radius: 20px;
+            --shadow: 0 10px 40px rgba(0,0,0,0.08);
+            --glass: rgba(255, 255, 255, 0.9);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; overflow-x: hidden; }
-        body { font-family: 'Montserrat', sans-serif; background: var(--bg-light); color: var(--text-main); line-height: 1.6; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* НАВИГАЦИЯ (GLASSMORPHISM) */
+        /* HEADER & NAVIGATION */
         nav {
             position: fixed; width: 100%; top: 0; z-index: 2000;
-            background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px);
+            background: var(--glass); backdrop-filter: blur(15px);
             padding: 15px 10%; display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 2px 20px rgba(0,0,0,0.05); transition: 0.4s;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .logo { font-family: 'Exo 2', sans-serif; font-size: 32px; font-weight: 900; color: var(--primary-color); text-decoration: none; letter-spacing: -1px; }
-        .logo span { color: var(--secondary-color); }
-        .nav-links { display: flex; list-style: none; gap: 25px; align-items: center; }
-        .nav-links a { text-decoration: none; color: var(--secondary-color); font-weight: 700; font-size: 13px; text-transform: uppercase; transition: 0.3s; }
-        .nav-links a:hover { color: var(--primary-color); }
-        .nav-btn { background: var(--primary-color); color: white !important; padding: 12px 25px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0, 200, 83, 0.3); }
+        .logo { font-family: 'Exo 2', sans-serif; font-size: 30px; font-weight: 900; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; list-style: none; gap: 30px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text); font-weight: 700; font-size: 13px; text-transform: uppercase; transition: 0.3s; }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-btn { background: var(--primary); color: white !important; padding: 10px 25px; border-radius: 50px; box-shadow: 0 5px 15px rgba(0, 210, 106, 0.3); }
 
-        /* ШАПКА САЙТА (HERO) */
-        header {
-            height: 95vh;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1542601906990-b4d3fb773b09?auto=format&fit=crop&w=1920&q=80');
+        /* HERO SECTION */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=1920&q=80');
             background-size: cover; background-position: center; background-attachment: fixed;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: white; text-align: center; padding: 0 20px;
+            text-align: center; color: white; padding: 0 20px;
         }
-        header h1 { font-family: 'Exo 2', sans-serif; font-size: clamp(40px, 8vw, 80px); line-height: 1.1; margin-bottom: 25px; }
-        header p { font-size: clamp(16px, 2vw, 22px); max-width: 900px; opacity: 0.9; margin-bottom: 45px; }
+        .hero h1 { font-family: 'Exo 2', sans-serif; font-size: clamp(40px, 8vw, 75px); font-weight: 900; margin-bottom: 25px; line-height: 1.1; }
+        .hero p { font-size: clamp(16px, 2vw, 22px); max-width: 900px; opacity: 0.9; margin-bottom: 40px; }
 
-        /* ПАНЕЛЬ СТАТИСТИКИ */
-        .stats-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px; width: 85%; margin: -60px auto 0; position: relative; z-index: 100;
+        /* STATISTICS BAR */
+        .stats-bar {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;
+            width: 80%; margin: -60px auto 0; position: relative; z-index: 100;
         }
-        .stat-item {
-            background: var(--white); padding: 40px; border-radius: var(--radius);
-            text-align: center; box-shadow: var(--shadow); transition: transform 0.4s;
+        .stat-card {
+            background: white; padding: 40px; border-radius: 25px; min-width: 280px;
+            text-align: center; box-shadow: var(--shadow); transition: 0.4s;
         }
-        .stat-item:hover { transform: translateY(-15px); }
-        .stat-item i { font-size: 45px; color: var(--primary-color); margin-bottom: 20px; }
-        .stat-item h3 { font-size: 42px; font-family: 'Exo 2'; margin-bottom: 10px; }
-        .stat-item p { font-weight: 600; color: var(--text-muted); text-transform: uppercase; font-size: 12px; }
+        .stat-card:hover { transform: translateY(-10px); }
+        .stat-card i { font-size: 40px; color: var(--primary); margin-bottom: 15px; }
+        .stat-card h3 { font-size: 40px; font-family: 'Exo 2'; color: var(--dark); }
 
-        /* СЕКЦИИ */
+        /* SECTIONS */
         section { padding: 120px 10%; }
-        .section-header { text-align: center; margin-bottom: 80px; }
-        .section-header h2 { font-size: 45px; font-family: 'Exo 2'; font-weight: 900; margin-bottom: 20px; position: relative; }
-        .section-header h2::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 80px; height: 5px; background: var(--primary-color); border-radius: 10px; }
+        .section-header { text-align: center; margin-bottom: 70px; }
+        .section-header h2 { font-size: 42px; font-family: 'Exo 2'; font-weight: 900; }
+        .section-header div { width: 80px; height: 5px; background: var(--primary); margin: 15px auto; border-radius: 5px; }
 
-        /* КАРТА ПУНКТОВ */
-        #map { height: 600px; border-radius: var(--radius); box-shadow: var(--shadow); border: 10px solid var(--white); }
+        /* DASHBOARD (PROFILE) */
+        #dashboard-section { display: none; background: white; border-radius: 30px; box-shadow: var(--shadow); margin-bottom: 50px; padding: 50px; }
+        .order-row { background: #f8fafc; padding: 20px; border-radius: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; border-left: 6px solid var(--primary); }
 
-        /* ФОРМА ЗАЯВКИ */
-        .request-box {
-            background: var(--white); border-radius: var(--radius); overflow: hidden;
-            display: flex; box-shadow: var(--shadow); max-width: 1100px; margin: 0 auto;
-        }
-        .request-info { flex: 1; background: var(--secondary-color); color: white; padding: 60px; }
-        .request-form { flex: 1.2; padding: 60px; background: #fff; }
+        /* FORM BOX */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; background: white; border-radius: 30px; overflow: hidden; box-shadow: var(--shadow); max-width: 1100px; margin: 0 auto; }
+        .form-image { background: url('https://images.unsplash.com/photo-1542601906990-b4d3fb773b09?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center; }
+        .form-content { padding: 60px; }
         
-        input, select { 
-            width: 100%; padding: 18px; margin-bottom: 25px; border: 2px solid #edf2f7; 
-            border-radius: 12px; font-family: inherit; font-size: 16px; transition: 0.3s;
-        }
-        input:focus { border-color: var(--primary-color); outline: none; background: #f0fff4; }
-        
-        .btn-submit {
-            background: var(--primary-color); color: white; border: none; padding: 20px;
-            border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%;
-            font-size: 18px; transition: 0.4s; text-transform: uppercase; letter-spacing: 1px;
-        }
-        .btn-submit:hover { background: #00e676; transform: scale(1.02); box-shadow: 0 10px 20px rgba(0, 200, 83, 0.2); }
+        input, select { width: 100%; padding: 16px; margin-bottom: 20px; border: 2px solid #eee; border-radius: 12px; font-family: inherit; transition: 0.3s; }
+        input:focus { border-color: var(--primary); outline: none; }
+        .btn-action { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%; font-size: 16px; transition: 0.3s; }
+        .btn-action:hover { background: var(--primary-dark); transform: scale(1.02); }
 
-        /* ЛИЧНЫЙ КАБИНЕТ */
-        #profile-section { display: none; background: #fff; border-radius: var(--radius); padding: 60px; box-shadow: var(--shadow); }
-        .order-history-card {
-            background: #f8fafc; padding: 25px; border-radius: 15px; margin-bottom: 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-left: 8px solid var(--primary-color); transition: 0.3s;
-        }
-        .order-history-card:hover { transform: translateX(10px); background: #f0fff4; }
+        /* MAP */
+        #map { height: 500px; border-radius: 30px; box-shadow: var(--shadow); }
 
-        /* МОДАЛЬНЫЕ ОКНА */
-        .modal-overlay {
-            display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); animation: fadeIn 0.4s;
-        }
-        .modal-body {
-            background: var(--white); width: 450px; margin: 8% auto; padding: 50px;
-            border-radius: 30px; position: relative; text-align: center;
-        }
+        /* MODAL */
+        .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); }
+        .modal-box { background: white; width: 420px; margin: 8% auto; padding: 50px; border-radius: 30px; text-align: center; }
 
-        /* FAQ И БЛОГИ (ДЛЯ ОБЪЕМА) */
-        .faq-item { background: white; padding: 25px; border-radius: 15px; margin-bottom: 15px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        .faq-answer { display: none; padding-top: 20px; color: var(--text-muted); border-top: 1px solid #eee; margin-top: 15px; }
-
-        footer { background: var(--secondary-color); color: white; padding: 100px 10% 40px; }
-        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 50px; margin-bottom: 60px; }
-        .footer-logo { font-family: 'Exo 2', sans-serif; font-size: 35px; font-weight: 900; color: var(--primary-color); margin-bottom: 20px; }
+        footer { background: var(--dark); color: white; padding: 80px 10% 40px; text-align: center; }
     </style>
 </head>
 <body>
 
-    <!-- НАВИГАЦИОННАЯ ПАНЕЛЬ -->
-    <nav id="main-nav">
-        <a href="#" class="logo">G-<span>TRASH</span></a>
+    <nav>
+        <a href="#" class="logo">G-TRASH</a>
         <ul class="nav-links">
-            <li><a href="#stats-anchor">ЦИФРЫ</a></li>
+            <li><a href="#stats">СТАТИСТИКА</a></li>
             <li><a href="#map-anchor">КАРТА</a></li>
-            <li><a href="#request-anchor">ЗАЯВКА</a></li>
-            <li><a href="#faq-anchor">FAQ</a></li>
-            <li id="nav-auth-item"><a onclick="openAuthModal()" class="nav-btn">ЛИЧНЫЙ КАБИНЕТ</a></li>
-            <li id="nav-user-item" style="display: none;"><a href="#profile-section" style="color: var(--primary-color); font-weight: 800;">МОЙ ПРОФИЛЬ</a></li>
+            <li><a href="#form-anchor">ЗАЯВКА</a></li>
+            <li id="auth-nav"><a onclick="toggleModal()" class="nav-btn">ЛИЧНЫЙ КАБИНЕТ</a></li>
+            <li id="user-nav" style="display: none;"><a href="#dashboard-section" style="color: var(--primary)">МОЙ ПРОФИЛЬ</a></li>
         </ul>
     </nav>
 
-    <!-- ГЛАВНЫЙ ЭКРАН -->
     <header>
-        <h1 class="animate__animated animate__fadeInDown">Цифровая Экология Будущего</h1>
-        <p class="animate__animated animate__fadeInUp">Мы объединяем технологии анализа данных и физическую логистику отходов для создания чистого мира. Присоединяйтесь к сообществу G-TRASH и меняйте планету прямо сейчас.</p>
-        <div class="animate__animated animate__fadeInUp animate__delay-1s">
-            <a href="#request-anchor" class="btn-submit" style="text-decoration: none; padding: 20px 50px;">ОФОРМИТЬ ВЫВОЗ</a>
-        </div>
+        <h1 class="animate__animated animate__fadeInDown">Революция в Экологии</h1>
+        <p class="animate__animated animate__fadeInUp">Умная система сбора и переработки вторичного сырья. Мы создали платформу, которая объединяет людей и технологии для спасения планеты.</p>
+        <a href="#form-anchor" class="btn-action" style="width: auto; padding: 15px 40px; text-decoration: none;">НАЧАТЬ ПЕРЕРАБОТКУ</a>
     </header>
 
-    <!-- ИНФОРМАЦИОННЫЕ ПОКАЗАТЕЛИ -->
-    <div id="stats-anchor" class="stats-grid">
-        <div class="stat-item">
-            <i class="fas fa-leaf"></i>
-            <h3 id="display-total-kg">0</h3>
+    <div class="stats-bar" id="stats">
+        <div class="stat-card">
+            <i class="fas fa-recycle"></i>
+            <h3 id="global-kg">0</h3>
             <p>кг переработано</p>
         </div>
-        <div class="stat-item">
-            <i class="fas fa-truck-loading"></i>
-            <h3 id="display-total-orders">0</h3>
-            <p>выполненных рейсов</p>
+        <div class="stat-card">
+            <i class="fas fa-truck"></i>
+            <h3 id="global-orders">0</h3>
+            <p>выполненных заказов</p>
         </div>
-        <div class="stat-item">
+        <div class="stat-card">
             <i class="fas fa-users"></i>
-            <h3 id="display-total-users">0</h3>
-            <p>эко-героев в сети</p>
+            <h3 id="global-users">0</h3>
+            <p>эко-активистов</p>
         </div>
     </div>
 
-    <!-- ЛИЧНЫЙ КАБИНЕТ (ДИНАМИЧЕСКИЙ) -->
-    <section id="profile-section">
+    <!-- DASHBOARD -->
+    <section id="dashboard-section">
         <div class="section-header">
-            <h2>Добро пожаловать, <span id="current-user-name">Загрузка...</span>!</h2>
-            <p>Ваш персональный вклад в экологию региона</p>
+            <h2>Профиль активиста: <span id="profile-name">...</span></h2>
+            <div></div>
         </div>
-        <div id="user-orders-container">Загружаем вашу историю...</div>
-        <div style="text-align: center; margin-top: 40px;">
-            <button onclick="logout()" class="btn-submit" style="background: #e74c3c; width: 250px;">ВЫЙТИ ИЗ АККАУНТА</button>
-        </div>
+        <div id="history-container">Загрузка вашей истории...</div>
+        <button onclick="logout()" style="margin-top:20px; background:none; border: 1px solid red; color: red; padding: 10px 20px; border-radius: 10px; cursor: pointer;">ВЫЙТИ ИЗ СИСТЕМЫ</button>
     </section>
 
-    <!-- КАРТОГРАФИЧЕСКИЙ СЕРВИС -->
+    <!-- КАРТА -->
     <section id="map-anchor">
         <div class="section-header">
-            <h2>Интеллектуальная карта G-TRASH</h2>
-            <p>Найдите ближайший автоматизированный пункт приема вторичных ресурсов</p>
+            <h2>Пункты приема G-TRASH</h2>
+            <p>Найдите ближайший бокс на интерактивной карте</p>
+            <div></div>
         </div>
         <div id="map"></div>
     </section>
 
-    <!-- СЕКЦИЯ FAQ (ДЛЯ ОБЪЕМА) -->
-    <section id="faq-anchor" style="background: #fff;">
-        <div class="section-header"><h2>Часто задаваемые вопросы</h2></div>
-        <div style="max-width: 800px; margin: 0 auto;">
-            <div class="faq-item" onclick="toggleFaq(this)">
-                <div style="display: flex; justify-content: space-between; font-weight: 700;">Как работает система бонусов? <i class="fas fa-plus"></i></div>
-                <div class="faq-answer">За каждый сданный килограмм сырья вы получаете 'Эко-Баллы', которые можно обменять на реальные услуги наших партнеров.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-                <div style="display: flex; justify-content: space-between; font-weight: 700;">Какие типы пластика вы принимаете? <i class="fas fa-plus"></i></div>
-                <div class="faq-answer">Мы принимаем PET(01), HDPE(02) и PP(05). Пожалуйста, убедитесь, что сырье чистое.</div>
-            </div>
-            <div class="faq-item" onclick="toggleFaq(this)">
-                <div style="display: flex; justify-content: space-between; font-weight: 700;">Нужно ли мыть бутылки? <i class="fas fa-plus"></i></div>
-                <div class="faq-answer">Да, чистое сырье перерабатывается на 40% быстрее и эффективнее. Это ваш прямой вклад в экологию.</div>
+    <!-- ФОРМА -->
+    <section id="form-anchor">
+        <div class="form-grid">
+            <div class="form-image"></div>
+            <div class="form-content">
+                <h2>Оставить заявку</h2>
+                <p style="margin-bottom: 30px; opacity: 0.7;">Наш специалист приедет в удобное время</p>
+                <input type="text" id="order-name" placeholder="Ваше имя">
+                <select id="order-type">
+                    <option value="Пластик PET">Пластик (PET 01)</option>
+                    <option value="Макулатура">Макулатура / Картон</option>
+                    <option value="Стекло">Стекло</option>
+                    <option value="Металл">Алюминий</option>
+                </select>
+                <input type="number" id="order-weight" placeholder="Примерный вес (кг)">
+                <button class="btn-action" onclick="submitOrder()">ОТПРАВИТЬ В БАЗУ ДАННЫХ</button>
+                <div id="status-msg" style="margin-top: 20px; font-weight: 800; text-align: center;"></div>
             </div>
         </div>
     </section>
 
-    <!-- ФОРМА ВЗАИМОДЕЙСТВИЯ -->
-    <section id="request-anchor">
-        <div class="request-box">
-            <div class="request-info">
-                <h2 style="font-size: 35px; margin-bottom: 20px;">Оформить заявку на вывоз</h2>
-                <p>Наша логистическая служба подберет оптимальный маршрут и приедет к вам в течение 24 часов.</p>
-                <div style="margin-top: 40px; display: flex; flex-direction: column; gap: 20px;">
-                    <p><i class="fas fa-shield-alt" style="color: var(--primary-color)"></i> Гарантия переработки 100%</p>
-                    <p><i class="fas fa-clock" style="color: var(--primary-color)"></i> Оперативный выезд группы</p>
-                    <p><i class="fas fa-coins" style="color: var(--primary-color)"></i> Начисление баллов сразу</p>
-                </div>
-            </div>
-            <div class="request-form">
-                <input type="text" id="input-client-name" placeholder="Укажите ваше имя">
-                <select id="input-waste-type">
-                    <option value="Пластиковые бутылки PET">Пластиковые бутылки (PET)</option>
-                    <option value="Макулатура и картон">Макулатура и картон</option>
-                    <option value="Стеклянная тара">Стеклянная тара</option>
-                    <option value="Алюминиевые банки">Алюминиевые банки</option>
-                </select>
-                <input type="number" id="input-weight" placeholder="Примерный вес сырья (кг)">
-                <button class="btn-submit" onclick="submitOrder()">ОТПРАВИТЬ ДАННЫЕ В БД</button>
-                <div id="order-status-msg" style="margin-top: 25px; text-align: center; font-weight: 800; font-size: 14px;"></div>
-            </div>
-        </div
+    <!-- AUTH MODAL -->
+    <div id="authModal" class="modal">
+        <div class="modal-box">
+            <h2 id="modal-title" style="margin-bottom: 25px;">Авторизация</h2>
+            <input type="email" id="auth-email" placeholder="Электронная почта">
+            <input type="password" id="auth-password" placeholder="Пароль">
+            <input type="text" id="auth-name" placeholder="Ваше полное имя" style="display: none;">
+            
+            <button class="btn-action" onclick="handleAuth()" id="auth-btn">ВОЙТИ</button>
+            <p style="margin-top: 20px; cursor: pointer; color: #666; font-size: 13px;" onclick="toggleRegMode()" id="reg-toggle">Нет аккаунта? Регистрация</p>
+            <button class="btn-action" onclick="toggleModal()" style="background: #999; margin-top: 10px;">ЗАКРЫТЬ</button>
+        </div>
+    </div>
 
+    <footer>
+        <div style="font-size: 24px; font-weight: 900; color: var(--primary); margin-bottom: 20px;">G-TRASH</div>
+        <p>Дипломная работа: "Автоматизация процессов эко-логистики"</p>
+        <p style="opacity: 0.4; font-size: 11px; margin-top: 20px;">© 2026. PostgreSQL + Supabase Cloud.</p>
+    </footer>
 
+    <!-- LOGIC -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const API = "https://ecology-project-do42.onrender.com";
+        let user = JSON.parse(localStorage.getItem('gt_user')) || null;
+        let isReg = false;
 
+        window.onload = () => {
+            initMap();
+            getStats();
+            if(user) showProfile();
+        };
 
+        function initMap() {
+            const map = L.map('map').setView([55.75, 37.61], 4);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            L.marker([55.75, 37.61]).addTo(map).bindPopup("<b>G-TRASH</b>: Москва");
+            L.marker([59.93, 30.33]).addTo(map).bindPopup("<b>G-TRASH</b>: Санкт-Петербург");
+        }
 
+        async function getStats() {
+            try {
+                const r = await fetch(`${API}/stats/global`);
+                const d = await r.json();
+                document.getElementById('global-kg').innerText = d.total_kg;
+                document.getElementById('global-orders').innerText = d.total_orders;
+                document.getElementById('global-users').innerText = d.total_users;
+            } catch (e) {}
+        }
 
+        function toggleModal() {
+            const m = document.getElementById('authModal');
+            m.style.display = m.style.display === 'block' ? 'none' : 'block';
+        }
 
+        function toggleRegMode() {
+            isReg = !isReg;
+            document.getElementById('modal-title').innerText = isReg ? "Регистрация" : "Авторизация";
+            document.getElementById('auth-name').style.display = isReg ? "block" : "none";
+            document.getElementById('auth-btn').innerText = isReg ? "СОЗДАТЬ АККАУНТ" : "ВОЙТИ";
+        }
 
+        async function handleAuth() {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const full_name = document.getElementById('auth-name').value;
 
+            const path = isReg ? "/auth/register" : "/auth/login";
+            const body = isReg ? {email, password, full_name} : {email, password};
 
+            const res = await fetch(API + path, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            
+            if(res.ok) {
+                if(isReg) { alert("Успешно! Теперь войдите."); toggleRegMode(); }
+                else { localStorage.setItem('gt_user', JSON.stringify(data)); location.reload(); }
+            } else { alert(data.detail); }
+        }
 
+        function showProfile() {
+            document.getElementById('dashboard-section').style.display = 'block';
+            document.getElementById('auth-nav').style.display = 'none';
+            document.getElementById('user-nav').style.display = 'block';
+            document.getElementById('profile-name').innerText = user.full_name;
+            loadHistory();
+        }
+
+        async function loadHistory() {
+            const res = await fetch(`${API}/orders/my/${user.id}`);
+            const data = await res.json();
+            const cont = document.getElementById('history-container');
+            if(data.length === 0) cont.innerHTML = "У вас пока нет заявок.";
+            else {
+                cont.innerHTML = data.map(o => `
+                    <div class="order-row">
+                        <div><strong>${o.waste_type}</strong><br><small>${new Date(o.order_date).toLocaleDateString()}</small></div>
+                        <div style="font-size: 20px; font-weight: 900; color: var(--primary)">${o.weight_kg} кг</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function submitOrder() {
+            const name = document.getElementById('order-name').value;
+            const type = document.getElementById('order-type').value;
+            const weight = document.getElementById('order-weight').value;
+            const msg = document.getElementById('status-msg');
+
+            if(!name || !weight) { alert("Заполните поля!"); return; }
+            msg.innerText = "⏳ СОХРАНЕНИЕ В POSTGRESQL...";
+            msg.style.color = "orange";
+
+            const res = await fetch(`${API}/orders/create`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    client_name: name, waste_type: type, 
+                    weight_kg: parseFloat(weight),
+                    user_id: user ? user.id : null
+                })
+            });
+
+            if(res.ok) {
+                msg.innerText = "✅ ДАННЫЕ УСПЕШНО СОХРАНЕНЫ В SUPABASE!";
+                msg.style.color = "green";
+                getStats();
+                if(user) loadHistory();
+            } else {
+                msg.innerText = "❌ ОШИБКА БАЗЫ ДАННЫХ";
+                msg.style.color = "red";
+            }
+        }
+
+        function logout() { localStorage.removeItem('gt_user'); location.reload(); }
+    </script>
+</body>
+</html>
