@@ -3,392 +3,556 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G-TRASH | GLOBAL ECO NETWORK 2026</title>
+    <title>G-TRASH | GLOBAL ECO NETWORK v35.0 PRO</title>
     
-    <!-- ПОДКЛЮЧЕНИЕ ШРИФТОВ С РАЗНЫМ НАЧЕРТАНИЕМ -->
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;600;900&family=Montserrat:wght@300;400;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <!-- ПОДКЛЮЧЕНИЕ ВНЕШНИХ БИБЛИОТЕК -->
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;800;900&family=Montserrat:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         /* 
-           G-TRASH ULTIMATE STYLESHEET 
-           Color Palette: Dark Space, Neon Mint, Cyber Blue
+           =============================================================================
+           G-TRASH PROFESSIONAL CSS FRAMEWORK (ULTIMATE DIPLOMA EDITION)
+           Цветовая схема: Deep Midnight (#0a0e14), Neon Mint (#00ff9d), Cyber Blue (#00d4ff)
+           =============================================================================
         */
+
         :root {
             --midnight: #0a0e14;
+            --midnight-light: #161b22;
+            --midnight-card: #1c2128;
             --mint: #00ff9d;
+            --mint-dark: #00cc7d;
             --blue: #00d4ff;
             --slate: #94a3b8;
+            --white: #ffffff;
             --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-glow: 0 0 20px rgba(0, 255, 157, 0.3);
+            --font-main: 'Montserrat', sans-serif;
+            --font-strict: 'Exo 2', sans-serif;
+            --font-tech: 'JetBrains Mono', monospace;
+            --transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         }
 
+        /* БАЗОВЫЕ НАСТРОЙКИ И СКРОЛЛ */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; overflow-x: hidden; background-color: var(--midnight); }
         body { 
-            font-family: 'Montserrat', sans-serif; 
+            font-family: var(--font-main); 
             background-color: var(--midnight); 
-            color: #ffffff; 
-            overflow-x: hidden; 
+            color: var(--white); 
+            line-height: 1.7;
         }
 
-        /* CUSTOM SCROLLBAR (STYLISH) */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-track { background: var(--midnight); }
         ::-webkit-scrollbar-thumb { background: linear-gradient(var(--mint), var(--blue)); border-radius: 10px; }
 
-        /* HEADER & NAVIGATION */
+        /* НАВИГАЦИЯ (STICKY BLUR NAV) */
         nav {
-            position: fixed; width: 100%; top: 0; z-index: 5000;
-            background: rgba(10, 14, 20, 0.8); backdrop-filter: blur(25px);
+            position: fixed; width: 100%; top: 0; z-index: 9000;
+            background: rgba(10, 14, 20, 0.8); backdrop-filter: blur(30px);
             padding: 20px 8%; display: flex; justify-content: space-between; align-items: center;
             border-bottom: 1px solid var(--glass-border);
+            transition: var(--transition);
         }
+        nav.scrolled { padding: 12px 8%; background: rgba(10, 14, 20, 0.95); }
+
         .logo { 
-            font-family: 'Exo 2', sans-serif; font-size: 32px; font-weight: 900; 
+            font-family: var(--font-strict); font-size: 32px; font-weight: 900; 
             color: var(--mint); text-decoration: none; letter-spacing: -2px;
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: center; gap: 12px;
         }
-        .logo i { font-size: 24px; color: var(--blue); }
+        .logo i { color: var(--blue); font-size: 26px; filter: drop-shadow(0 0 5px var(--blue)); }
         
-        .nav-links { display: flex; list-style: none; gap: 40px; }
+        .nav-links { display: flex; list-style: none; gap: 35px; align-items: center; }
         .nav-links a { 
             text-decoration: none; color: var(--slate); font-weight: 700; 
-            font-size: 12px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s;
+            font-size: 11px; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
         }
-        .nav-links a:hover { color: var(--mint); text-shadow: 0 0 15px var(--mint); }
-        .lk-btn { 
-            background: linear-gradient(45deg, var(--mint), var(--blue));
-            color: var(--midnight) !important; padding: 12px 30px; border-radius: 50px;
-            font-weight: 900; box-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
-        }
+        .nav-links a:hover { color: var(--mint); text-shadow: 0 0 10px var(--mint); }
 
-        /* HERO SECTION (ULTRA MODERN) */
+        /* КНОПКИ МЕНЮ (СПЕЦИАЛЬНЫЙ СТИЛЬ) */
+        .cyber-btn {
+            padding: 10px 25px; border-radius: 4px; font-family: var(--font-tech);
+            font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.3s;
+            text-transform: uppercase; border: 1px solid var(--mint); color: var(--mint);
+            background: transparent; position: relative; overflow: hidden;
+        }
+        .cyber-btn:hover { background: var(--mint); color: var(--midnight); box-shadow: 0 0 20px var(--mint); }
+
+        /* ГЕРОЙ-СЕКЦИЯ (CINEMATIC HERO) */
         .hero {
             height: 100vh; display: flex; flex-direction: column; justify-content: center;
             align-items: center; text-align: center; position: relative;
-            background: radial-gradient(circle at 50% 50%, #1a2233 0%, #0a0e14 100%);
-            padding-top: 80px;
+            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0a0e14 100%);
+            padding: 0 10%;
         }
-        .hero h1 { 
-            font-family: 'Exo 2', sans-serif; font-size: clamp(50px, 12vw, 120px); 
+        .hero-title { 
+            font-family: var(--font-strict); font-size: clamp(40px, 10vw, 110px); 
             line-height: 0.85; font-weight: 900; text-transform: uppercase;
-            background: linear-gradient(to bottom, #fff 30%, var(--slate));
+            background: linear-gradient(to bottom, #fff 40%, var(--slate));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 30px;
         }
-        .hero span { color: var(--mint); -webkit-text-fill-color: var(--mint); }
-        .hero p { 
-            margin-top: 40px; font-size: 20px; color: var(--slate); max-width: 700px;
-            font-weight: 300; line-height: 1.8;
-        }
-
-        /* LIVE STATUS TICKER (TG STYLE) */
-        .ticker-bar {
-            background: var(--blue); color: #000; padding: 12px 0;
-            overflow: hidden; white-space: nowrap; font-family: 'JetBrains Mono';
-            font-weight: 800; font-size: 13px;
-        }
-        .ticker-move { display: inline-block; animation: tickerScroll 40s linear infinite; }
-        @keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-        /* SECTIONS GENERAL */
-        section { padding: 140px 10%; position: relative; }
-        .section-header { margin-bottom: 80px; }
-        .section-header h2 { font-family: 'Exo 2'; font-size: 60px; font-weight: 900; text-transform: uppercase; }
-        .section-header p { color: var(--mint); font-family: 'JetBrains Mono'; font-weight: bold; }
-
-        /* TG NEWS FEED (VERTICAL CARDS) */
-        .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; }
-        .news-item { 
-            background: var(--glass); border: 1px solid var(--glass-border); 
-            border-radius: 40px; overflow: hidden; transition: var(--transition);
-        }
-        .news-item:hover { transform: translateY(-20px); border-color: var(--mint); background: rgba(255,255,255,0.05); }
-        .news-img { width: 100%; height: 300px; background-size: cover; background-position: center; }
-        .news-content { padding: 40px; }
-        .news-item h3 { font-family: 'Exo 2'; font-size: 24px; margin-bottom: 20px; }
-
-        /* PERSONAL DASHBOARD (GLASS CARD) */
-        #dashboard { display: none; background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01)); border-radius: 50px; padding: 80px; border: 1px solid var(--glass-border); margin-bottom: 100px; }
-        .order-row { 
-            background: rgba(0,0,0,0.2); padding: 30px; border-radius: 25px; margin-bottom: 20px;
-            display: flex; justify-content: space-between; align-items: center;
-            border-left: 10px solid var(--mint);
+        .hero-title span { color: var(--mint); -webkit-text-fill-color: var(--mint); }
+        
+        .hero-subtitle { 
+            font-size: 18px; color: var(--slate); max-width: 800px;
+            font-weight: 400; line-height: 1.8; margin-bottom: 50px;
         }
 
-        /* INTERACTIVE MAP */
-        #map { height: 700px; border-radius: 60px; border: 2px solid var(--glass-border); filter: grayscale(1) invert(1) contrast(1.2); }
+        /* ТЕРМИНАЛЬНАЯ ЛЕНТА (TICKER) */
+        .ticker { background: var(--blue); color: #000; padding: 10px 0; overflow: hidden; white-space: nowrap; font-family: var(--font-tech); font-weight: 800; font-size: 12px; }
+        .ticker-wrap { display: inline-block; animation: ticker 50s linear infinite; }
+        @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
-        /* REQUEST FORM 3.0 */
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center; }
-        input, select, textarea { 
-            width: 100%; background: #161b22; border: 2px solid #21262d; 
-            padding: 25px; border-radius: 20px; color: white; font-size: 18px; margin-bottom: 25px;
-            transition: 0.3s; font-family: 'JetBrains Mono';
-        }
-        input:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 30px rgba(0, 212, 255, 0.2); }
-        .send-btn { 
-            background: var(--mint); color: var(--midnight); border: none; padding: 25px; 
-            border-radius: 20px; font-weight: 900; font-size: 20px; cursor: pointer; width: 100%;
-            text-transform: uppercase; transition: var(--transition);
-        }
-        .send-btn:hover { letter-spacing: 5px; box-shadow: 0 0 50px var(--mint); }
+        /* СЕКЦИИ */
+        section { padding: 120px 10%; position: relative; }
+        .section-tag { font-family: var(--font-tech); color: var(--mint); font-weight: 800; margin-bottom: 15px; display: block; letter-spacing: 3px; }
+        .section-title { font-family: var(--font-strict); font-size: 55px; font-weight: 900; text-transform: uppercase; margin-bottom: 60px; line-height: 1; }
 
-        /* FOOTER */
-        footer { padding: 120px 10% 60px; background: #05070a; border-top: 1px solid var(--glass-border); }
-        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 80px; }
-        .footer-col h4 { color: var(--mint); margin-bottom: 40px; font-family: 'Exo 2'; font-size: 20px; }
+        /* КАРТОЧКИ (PRO CARDS) */
+        .pro-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+        .pro-card {
+            background: var(--midnight-card); border: 1px solid var(--glass-border);
+            padding: 50px; border-radius: 40px; position: relative; transition: var(--transition);
+            overflow: hidden;
+        }
+        .pro-card:hover { transform: translateY(-15px); border-color: var(--blue); background: #21262d; }
+        .pro-card i { font-size: 45px; color: var(--mint); margin-bottom: 30px; }
+        .pro-card h3 { font-family: var(--font-strict); font-size: 28px; margin-bottom: 20px; color: #fff; }
+        .pro-card p { color: var(--slate); font-size: 15px; }
+
+        /* СПЕЦИАЛЬНЫЕ ПАНЕЛИ (СЛАЙД-МЕНЮ) */
+        .side-panel {
+            position: fixed; top: 0; right: -100%; width: 500px; height: 100vh;
+            background: var(--midnight-light); z-index: 10000; padding: 60px;
+            box-shadow: -50px 0 100px rgba(0,0,0,0.5); border-left: 1px solid var(--glass-border);
+            transition: 0.6s cubic-bezier(0.19, 1, 0.22, 1); overflow-y: auto;
+        }
+        .side-panel.active { right: 0; }
+        .panel-close { position: absolute; top: 30px; left: 30px; cursor: pointer; color: var(--slate); font-size: 24px; }
+        .panel-close:hover { color: var(--mint); }
+
+        /* ФОРМЫ ВНУТРИ ПАНЕЛЕЙ */
+        .input-group { margin-bottom: 30px; }
+        .input-group label { display: block; font-family: var(--font-tech); font-size: 10px; color: var(--mint); margin-bottom: 10px; text-transform: uppercase; }
+        input, select, textarea {
+            width: 100%; background: #0d1117; border: 1px solid #30363d;
+            padding: 18px; border-radius: 12px; color: white; font-family: var(--font-main);
+            font-size: 15px; transition: 0.3s;
+        }
+        input:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 20px rgba(0, 212, 255, 0.1); }
+
+        /* ТЕРМИНАЛ ЛОГОВ */
+        .terminal-box {
+            background: #000; border-radius: 15px; padding: 30px; font-family: var(--font-tech);
+            color: #00ff00; font-size: 13px; line-height: 1.8; border: 1px solid #333;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+
+        /* КАРТА */
+        #map { height: 650px; border-radius: 40px; border: 1px solid var(--glass-border); filter: grayscale(1) invert(0.9) contrast(1.2); }
+
+        /* ЛИЧНЫЙ КАБИНЕТ (ЭЛЕМЕНТЫ) */
+        .user-stat-row { display: flex; gap: 20px; margin-bottom: 40px; }
+        .user-stat-card { flex: 1; background: var(--midnight-card); padding: 20px; border-radius: 15px; text-align: center; border: 1px solid var(--glass-border); }
+        .user-stat-card h4 { font-family: var(--font-tech); font-size: 24px; color: var(--mint); }
+        .history-item { background: #0d1117; padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid var(--blue); }
+
+        /* ФУТЕР-МЕГАПОЛИС */
+        footer { padding: 120px 8% 40px; background: #05070a; border-top: 1px solid var(--glass-border); }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; }
+        .footer-col h4 { font-family: var(--font-strict); color: var(--mint); margin-bottom: 30px; font-size: 18px; text-transform: uppercase; }
         .footer-col ul { list-style: none; }
-        .footer-col li { margin-bottom: 20px; color: var(--slate); font-size: 14px; cursor: pointer; }
-        .footer-col li:hover { color: white; }
+        .footer-col li { margin-bottom: 15px; color: var(--slate); font-size: 14px; cursor: pointer; transition: 0.3s; }
+        .footer-col li:hover { color: #fff; transform: translateX(5px); }
 
         /* АНИМАЦИИ ВСПЛЫТИЯ */
         .reveal { opacity: 0; transform: translateY(50px); transition: all 1s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* ПРЕДЗАГРУЗЧИК */
+        #loader { position: fixed; width: 100%; height: 100%; background: var(--midnight); z-index: 99999; display: flex; justify-content: center; align-items: center; font-family: var(--font-tech); color: var(--mint); }
     </style>
 </head>
 <body>
 
-    <!-- NAV -->
-    <nav>
-        <a href="#" class="logo"><i class="fas fa-biohazard"></i> G-<span>TRASH</span></a>
+    <div id="loader">G-TRASH_SYSTEM_BOOTING_V35.0...</div>
+
+    <!-- НАВИГАЦИЯ -->
+    <nav id="navbar">
+        <a href="#" class="logo"><i class="fas fa-shield-virus"></i> G-<span>TRASH</span></a>
         <ul class="nav-links">
             <li><a href="#stats">Аналитика</a></li>
+            <li><a href="#map-anchor">Хабы</a></li>
             <li><a href="#news">Эко-Медиа</a></li>
-            <li><a href="#map-anchor">Сеть Хабов</a></li>
             <li><a href="#faq">База Знаний</a></li>
-            <li id="auth-slot"><a onclick="openAuth()" class="lk-btn">ЛИЧНЫЙ КАБИНЕТ</a></li>
-            <li id="user-slot" style="display:none;"><a href="#dashboard" style="color:var(--mint); font-weight:800;">PROFILE_ID: <span id="uid-display">001</span></a></li>
+            <li><button class="cyber-btn" onclick="openPanel('request-panel')">Создать заявку</button></li>
+            <li id="auth-nav-link"><button class="cyber-btn" style="border-color: var(--blue); color: var(--blue);" onclick="openPanel('auth-panel')">Вход</button></li>
+            <li id="user-nav-link" style="display:none;"><button class="cyber-btn" style="border-color: var(--blue); color: var(--blue);" onclick="openPanel('user-panel')">Мой профиль</button></li>
         </ul>
-    </nav>
-
-    <!-- HERO -->
+    </nav><!-- ГЛАВНЫЙ ЭКРАН -->
     <header class="hero">
-        <h1 class="animate__animated animate__zoomIn">RECYCLE<span>_OR_</span>DIE</h1>
-        <p class="animate__animated animate__fadeInUp animate__delay-1s">
-            Мы строим крупнейшую в СНГ децентрализованную сеть управления вторичными ресурсами. 
-            Прозрачность транзакций, PostgreSQL-интеграция и неоновое будущее экологии.
+        <h1 class="hero-title animate__animated animate__fadeIn">ECO <span>REVOLUTION</span><br>SYSTEM_v35</h1>
+        <p class="hero-subtitle animate__animated animate__fadeInUp animate__delay-1s">
+            Профессиональная децентрализованная платформа управления вторичными ресурсами. 
+            Мы объединяем мощь облачных вычислений PostgreSQL и экологическую ответственность каждого гражданина.
         </p>
-        <div style="margin-top: 50px;" class="animate__animated animate__fadeInUp animate__delay-2s">
-            <a href="#request" class="send-btn" style="padding: 20px 60px; text-decoration: none;">Начать транзакцию</a>
+        <div class="animate__animated animate__fadeInUp animate__delay-2s">
+            <button class="main-btn" style="width: auto; padding: 20px 60px;" onclick="openPanel('request-panel')">ИНИЦИИРОВАТЬ СБОР</button>
         </div>
     </header>
 
-    <!-- TICKER -->
-    <div class="ticker-bar">
-        <div class="ticker-move">
-            LIVE: CONNECTING TO SUPABASE CLOUD NODES... [OK] | SYSTEM STATUS: 100% STABLE | RECYCLED TODAY: 14,820 KG | NEW ECO-HERO JOINED FROM MOSCOW | SYSTEM STATUS: 100% STABLE | RECYCLED TODAY: 14,820 KG | NEW ECO-HERO JOINED FROM MOSCOW |
+    <!-- ИНФОРМАЦИОННЫЙ ТИКЕР (БЕГУЩАЯ СТРОКА) -->
+    <div class="ticker">
+        <div class="ticker-wrap">
+            <div style="display: inline-block; padding: 0 50px;">[SYSTEM] CONNECTED TO SUPABASE_NODE_01... OK</div>
+            <div style="display: inline-block; padding: 0 50px;">[LIVE] НОВАЯ ТРАНЗАКЦИЯ: 42 КГ ПЛАСТИКА В МОСКВЕ</div>
+            <div style="display: inline-block; padding: 0 50px;">[STATS] ТЕКУЩАЯ ЭФФЕКТИВНОСТЬ ПЕРЕРАБОТКИ: 98.2%</div>
+            <div style="display: inline-block; padding: 0 50px;">[TECH] API FASTAPI СТАТУС: СТАБИЛЬНО</div>
+            <!-- Повтор для объема -->
+            <div style="display: inline-block; padding: 0 50px;">[SYSTEM] CONNECTED TO SUPABASE_NODE_01... OK</div>
+            <div style="display: inline-block; padding: 0 50px;">[LIVE] НОВАЯ ТРАНЗАКЦИЯ: 42 КГ ПЛАСТИКА В МОСКВЕ</div>
         </div>
     </div>
 
-    <!-- STATS -->
-    <section id="stats">
-        <div class="stats-container">
-            <div class="stat-card reveal">
-                <i class="fas fa-terminal"></i>
-                <h2 id="st-kg">0</h2>
-                <p>TOTAL_KILOGRAMS_PROCESSED</p>
+    <!-- СЕКЦИЯ: ГЛОБАЛЬНАЯ АНАЛИТИКА -->
+    <section id="stats" class="reveal">
+        <span class="section-tag">// REAL_TIME_ANALYTICS</span>
+        <h2 class="section-title">Системные показатели</h2>
+        <div class="pro-grid">
+            <div class="stat-card card-pro">
+                <i class="fas fa-microchip"></i>
+                <h2 id="global-kg">0</h2>
+                <p>KILOGRAMS_PROCESSED</p>
             </div>
-            <div class="stat-card reveal">
+            <div class="stat-card card-pro">
                 <i class="fas fa-network-wired"></i>
-                <h2 id="st-cnt">0</h2>
-                <p>BLOCKCHAIN_ORDERS_CONFIRMED</p>
+                <h2 id="global-orders">0</h2>
+                <p>BLOCKCHAIN_TRANSACTIONS</p>
             </div>
-            <div class="stat-card reveal">
+            <div class="stat-card card-pro">
                 <i class="fas fa-brain"></i>
-                <h2 id="st-usr">0</h2>
-                <p>NEURAL_NETWORK_USERS</p>
+                <h2 id="global-users">0</h2>
+                <p>NEURAL_NETWORK_NODES</p>
             </div>
         </div>
     </section>
 
-    <!-- PERSONAL DASHBOARD -->
-    <section id="dashboard" class="reveal">
-        <div class="section-header">
-            <p>// DATA_HISTORY</p>
-            <h2>Ваш личный кабинет: <span id="user-name">...</span></h2>
-        </div>
-        <div id="history-list">Загрузка протоколов...</div>
-        <button onclick="logout()" class="send-btn" style="background:none; border:1px solid red; color:red; width:200px; margin-top:40px;">DISCONNECT</button>
-    </section>
-
-    <!-- NEWS FEED (TG STYLE) -->
-    <section id="news">
-        <div class="section-header">
-            <p>// ECO_MEDIA_CHANNEL</p>
-            <h2>Последние обновления</h2>
-        </div>
-        <div class="news-grid">
-            <!-- ДЛЯ ОБЪЕМА: ТЫ МОЖЕШЬ СКЛОНИРОВАТЬ ЭТОТ БЛОК 10 РАЗ -->
-            <div class="news-item reveal">
-                <div class="news-img" style="background-image: url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800');"></div>
-                <div class="news-content">
-                    <span style="color:var(--blue); font-weight:800; font-size:10px;">#ТЕХНОЛОГИИ</span>
-                    <h3>Как нейросети G-TRASH распознают 100 типов пластика</h3>
-                    <p style="color:var(--slate); margi
-<!-- СЕКЦИЯ: ЭКО-АКАДЕМИЯ (ОГРОМНЫЙ БЛОК ДЛЯ ЧТЕНИЯ) -->
-    <section id="academy" class="reveal">
-        <div class="section-header">
-            <p>// KNOWLEDGE_BASE_V2.0</p>
-            <h2>Эко-Академия G-TRASH</h2>
-            <div style="width: 100%; height: 1px; background: var(--glass-border); margin-top: 30px;"></div>
-        </div>
-
-        <div class="academy-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-            <!-- Карточка 1 -->
-            <div class="academy-card" style="background: var(--glass); border: 1px solid var(--glass-border); padding: 40px; border-radius: 30px; transition: 0.3s;">
-                <span style="font-family: 'JetBrains Mono'; color: var(--blue);">[LECTURE_01]</span>
-                <h3 style="margin: 20px 0; font-family: 'Exo 2'; color: var(--mint);">Жизненный цикл пластика</h3>
-                <p style="color: var(--slate); font-size: 14px; line-height: 1.8;">Знаете ли вы, что одна бутылка PET разлагается 450 лет? В нашей системе она превращается в новую одежду за 48 часов. Мы используем метод высокотемпературной деполимеризации...</p>
-                <div style="margin-top: 30px; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-clock"></i> <span style="font-size: 12px;">Время чтения: 5 мин</span>
-                </div>
-            </div>
-
-            <!-- Карточка 2 -->
-            <div class="academy-card" style="background: var(--glass); border: 1px solid var(--glass-border); padding: 40px; border-radius: 30px; transition: 0.3s;">
-                <span style="font-family: 'JetBrains Mono'; color: var(--blue);">[LECTURE_02]</span>
-                <h3 style="margin: 20px 0; font-family: 'Exo 2'; color: var(--mint);">Мифы о биоразлагаемости</h3>
-                <p style="color: var(--slate); font-size: 14px; line-height: 1.8;">Пакеты с надписью «био» часто распадаются на микропластик, который невозможно собрать. Настоящая переработка — это цикличная экономика. G-TRASH внедряет стандарт Cradle-to-Cradle...</p>
-                <div style="margin-top: 30px; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-clock"></i> <span style="font-size: 12px;">Время чтения: 8 мин</span>
-                </div>
-            </div>
-
-            <!-- Карточка 3 -->
-            <div class="academy-card" style="background: var(--glass); border: 1px solid var(--glass-border); padding: 40px; border-radius: 30px; transition: 0.3s;">
-                <span style="font-family: 'JetBrains Mono'; color: var(--blue);">[LECTURE_03]</span>
-                <h3 style="margin: 20px 0; font-family: 'Exo 2'; color: var(--mint);">Экономика токенов</h3>
-                <p style="color: var(--slate); font-size: 14px; line-height: 1.8;">Ваш мусор — это актив. В версии 3.0 мы внедрим смарт-контракты. За каждый сданный кг алюминия вы получаете внутренний токен GT-COIN, привязанный к биржевой цене металла...</p>
-                <div style="margin-top: 30px; display: flex; align-items: center; gap: 10px;">
-                    <i class="fas fa-clock"></i> <span style="font-size: 12px;">Время чтения: 12 мин</span>
-                </div>
-            </div>
-            <!-- СОВЕТ: Продублируй эти карточки еще 6 раз, меняя тексты, чтобы создать эффект бесконечной библиотеки -->
+    <!-- СЕКЦИЯ: ТЕХНОЛОГИЧЕСКОЕ ЯДРО (ТЕРМИНАЛ) -->
+    <section id="tech-stack" class="reveal" style="background: #070b14;">
+        <span class="section-tag">// ARCHITECTURE_DEBUG</span>
+        <h2 class="section-title">Технологический стек</h2>
+        <div class="terminal-box">
+            <div style="color: #666; margin-bottom: 15px;"># G-TRASH_KERNEL_INIT_LOGS</div>
+            <div>[0.0001] Запуск инстанса FastAPI на порту 8000... <span style="color: var(--mint);">[SUCCESS]</span></div>
+            <div>[0.0452] Подключение пула соединений SQLAlchemy (max_overflow=25)... <span style="color: var(--mint);">[OK]</span></div>
+            <div>[0.1293] Синхронизация схем 'users' и 'orders' с облаком Supabase... <span style="color: var(--mint);">[DONE]</span></div>
+            <div>[0.5521] Модуль нейросетевой сортировки v4.2 загружен.</div>
+            <div>[1.0422] Ожидание входящих транзакций...</div>
+            <div style="display:inline-block; width:10px; height:18px; background: var(--mint); animation: blink 1s infinite; vertical-align: middle; margin-left: 5px;"></div>
         </div>
     </section>
 
-    <!-- СЕКЦИЯ: ТЕХНОЛОГИЧЕСКИЙ СТЕК (ДЛЯ СОЛИДНОСТИ ДИПЛОМА) -->
-    <section id="tech" style="background: #070b14;">
-        <div class="section-header" style="text-align: center;">
-            <p style="color: var(--blue);">// SYSTEM_ARCHITECTURE</p>
-            <h2 style="font-family: 'Exo 2'; font-size: 50px;">Технологическое ядро</h2>
-        </div>
-
-        <div class="tech-container" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 50px;">
-            <div class="tech-badge" style="border: 1px solid var(--mint); color: var(--mint); padding: 10px 25px; border-radius: 50px; font-family: 'JetBrains Mono'; font-size: 14px;">FastAPI Framework</div>
-            <div class="tech-badge" style="border: 1px solid var(--blue); color: var(--blue); padding: 10px 25px; border-radius: 50px; font-family: 'JetBrains Mono'; font-size: 14px;">PostgreSQL Cloud</div>
-            <div class="tech-badge" style="border: 1px solid #fff; color: #fff; padding: 10px 25px; border-radius: 50px; font-family: 'JetBrains Mono'; font-size: 14px;">SQLAlchemy ORM</div>
-            <div class="tech-badge" style="border: 1px solid #ff0055; color: #ff0055; padding: 10px 25px; border-radius: 50px; font-family: 'JetBrains Mono'; font-size: 14px;">Neural Network Sort v4</div>
-            <div class="tech-badge" style="border: 1px solid var(--mint); color: var(--mint); padding: 10px 25px; border-radius: 50px; font-family: 'JetBrains Mono'; font-size: 14px;">Leaflet Maps API</div>
-            <div class="tech-badge" style="border: 1px solid var(--blue); color: var(--blue); padding: 10px 25px; border-radius: 50px; font-family: 'JetBrains Mono'; font-size: 14px;">Render Deployment</div>
-        </div>
-
-        <!-- Консольное окно (Чисто для красоты и стиля) -->
-        <div class="terminal-window" style="background: #000; border: 1px solid #333; border-radius: 15px; margin-top: 60px; padding: 30px; font-family: 'JetBrains Mono'; color: #00ff00; font-size: 12px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);">
-            <div style="color: #666; margin-bottom: 10px;">// G-TRASH_SYSTEM_LOGS</div>
-            <div>[INFO] 12:45:22 - Прямое подключение к Supabase PostgreSQL... Установлено.</div>
-            <div>[INFO] 12:45:23 - Инициализация таблиц 'users' и 'orders'... OK.</div>
-            <div>[WARN] 12:46:10 - Высокая нагрузка на Хаб "Москва-Центр": Заполнение 89%.</div>
-            <div>[INFO] 12:47:01 - Транзакция #84293 подтверждена пользователем Profile_042.</div>
-            <div>[INFO] 12:48:15 - Обновление глобальной статистики... <span style="color: var(--mint);">[SUCCESS]</span></div>
-            <div id="cursor" style="display: inline-block; width: 8px; height: 15px; background: var(--mint); animation: blink 1s infinite;"></div>
+    <!-- СЕКЦИЯ: ЭКО-АКАДЕМИЯ (ДЛИННЫЙ КОНТЕНТ) -->
+    <section id="news" class="reveal">
+        <span class="section-tag">// KNOWLEDGE_BASE_V2</span>
+        <h2 class="section-title">Эко-Медиа Центр</h2>
+        <div class="pro-grid">
+            <div class="news-item card-pro">
+                <div style="height: 200px; background: url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800'); background-size: cover; border-radius: 20px; margin-bottom: 25px;"></div>
+                <span style="color: var(--blue); font-family: var(--font-tech); font-size: 10px;">[TECH_ARTICLE]</span>
+                <h3 style="margin-top:10px;">Алгоритмы сортировки 2026</h3>
+                <p>Как G-TRASH использует лазерную спектроскопию для мгновенного определения типа полимера в потоке...</p>
+            </div>
+            <div class="news-item card-pro">
+                <div style="height: 200px; background: url('https://images.unsplash.com/photo-1542601906990-b4d3fb773b09?w=800'); background-size: cover; border-radius: 20px; margin-bottom: 25px;"></div>
+                <span style="color: var(--mint); font-family: var(--font-tech); font-size: 10px;">[GLOBAL_REPORT]</span>
+                <h3 style="margin-top:10px;">-15% выбросов CO2</h3>
+                <p>Благодаря интеграции системы в жилых комплексах Москвы, уровень углеродного следа снизился на рекордные показатели...</p>
+            </div>
+            <div class="news-item card-pro">
+                <div style="height: 200px; background: url('https://images.unsplash.com/photo-1611284446314-60a58ac0deb9?w=800'); background-size: cover; border-radius: 20px; margin-bottom: 25px;"></div>
+                <span style="color: var(--blue); font-family: var(--font-tech); font-size: 10px;">[FUTURE_NODES]</span>
+                <h3 style="margin-top:10px;">Автономные дрон-хабы</h3>
+                <p>Анонс новой версии G-TRASH 4.0: полностью автоматические пункты приема без участия человека...</p>
+            </div>
         </div>
     </section>
 
-    <!-- СЕКЦИЯ: ИНТЕРАКТИВНЫЙ FAQ (ОЧЕНЬ МНОГО ТЕКСТА) -->
-    <section id="faq">
-        <div class="section-header">
-            <p>// FREQUENTLY_ASKED_QUESTIONS</p>
-            <h2>Ответы на вопросы</h2>
-        </div>
-        
+    <!-- КАРТА ОФИСОВ -->
+    <section id="map-anchor" class="reveal">
+        <span class="section-tag">// GLOBAL_NODES_MAP</span>
+        <h2 class="section-title">География присутствия</h2>
+        <div id="map"></div>
+    </section>
+
+    <!-- FAQ (РАСШИРЕННЫЙ ТЕКСТ) -->
+    <section id="faq" class="reveal">
+        <span class="section-tag">// USER_SUPPORT</span>
+        <h2 class="section-title">База знаний</h2>
         <div style="max-width: 900px; margin: 0 auto;">
-            <!-- Вопрос 1 -->
-            <div class="faq-item" style="border-bottom: 1px solid var(--glass-border); padding: 25px 0;" onclick="toggleFaq(this)">
-                <div style="display: flex; justify-content: space-between; font-weight: 800; cursor: pointer;">
-                    <span>Как рассчитывается мой углеродный след в системе?</span>
-                    <i class="fas fa-plus"></i>
-                </div>
-                <div class="faq-answer" style="display: none; padding-top: 20px; color: var(--slate); font-size: 14px;">
-                    Мы используем международный стандарт ISO 14064. За каждый сданный килограмм пластика система автоматически вычитает 2.5 кг CO2 из вашего персонального счетчика, так как предотвращается производство первичного полимера.
-                </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div style="display: flex; justify-content: space-between; font-weight: 800;"><span>Как работает начисление бонусных баллов?</span> <i class="fas fa-plus"></i></div>
+                <div class="faq-answer">Система автоматически рассчитывает ценность сырья на основе текущих рыночных котировок вторичных ресурсов. 1 кг чистого PET = 10 баллов в ваш личный профиль.</div>
             </div>
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div style="display: flex; justify-content: space-between; font-weight: 800;"><span>Почему мой заказ в статусе "В ОБРАБОТКЕ"?</span> <i class="fas fa-plus"></i></div>
+                <div class="faq-answer">Это нормальный процесс проверки данных в PostgreSQL. Обычно логистический дрон подтверждает заявку в течение 10-15 минут.</div>
+            </div>
+        </div>
+    </section>
 
-            <!-- Вопрос 2 -->
-            <div class="faq-item" style="border-bottom: 1px solid var(--glass-border); padding: 25px 0;" onclick="toggleFaq(this)">
-                <div style="display: flex; justify-content: space-between; font-weight: 800; cursor: pointer;">
-                    <span>Могу ли я сдать электронику (E-Waste)?</span>
-                    <i class="fas fa-plus"></i>
-                </div>
-                <div class="faq-answer" style="display: none; padding-top: 20px; color: var(--slate); font-size: 14px;">
-                    На данный момент мы принимаем электронику только в специализированных хабах G-TRASH TECH. Ищите иконку процессора на нашей карте. Мы извлекаем до 98% ценных металлов, включая золото и палладий.
-                </div>
+    <!-- ФУТЕР -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <a href="#" class="logo">G-<span>TRASH</span></a>
+                <p style="margin-top: 30px; color: var(--slate);">The first AI-driven waste management ecosystem. Built on FastAPI, Powered by Green Motivation.</p>
             </div>
+            <div class="footer-col">
+                <h4>System</h4>
+                <ul><li>Live Stats</li><li>API Docs</li><li>Node Map</li></ul>
+            </div>
+            <div class="footer-col">
+                <h4>Community</h4>
+                <ul><li>Telegram Bot</li><li>Eco Academy</li><li>GitHub Repo</li></ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul><li>Whitepaper</li><li>Privacy Protocol</li><li>Terms</li></ul>
+            </div>
+        </div>
+        <p style="text-align: center; margin-top: 100px; font-size: 11px; opacity: 0.2; letter-spacing: 5px;">© 2026 G-TRASH GLOBAL. DIPLOMA_MODE_ENABLED.</p>
+    </footer>
+
+    <!-- ПАНЕЛЬ: ЗАЯВКА -->
+    <div id="request-panel" class="side-panel">
+        <div class="panel-close" onclick="closePanel('request-panel')"><i class="fas fa-times"></i></div>
+        <h2 style="font-family: var(--font-strict); font-size: 32px; margin-bottom: 40px; color: var(--mint);">NEW_TRANSACTION</h2>
+        <div class="input-group">
+            <label>IDENTIFICATION_NAME</label>
+            <input type="text" id="req-name" placeholder="Введите ваше имя">
+        </div>
+        <div class="input-group">
+            <label>WASTE_CATEGORY</label>
+            <select id="req-type">
+                <option value="POLYMER_PET">Пластик (PET 01)</option>
+                <option value="CELLULOSE">Бумага / Картон</option>
+                <option value="SILICA">Стеклянная тара</option>
+                <option value="METAL_AL">Алюминий</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <label>CARGO_WEIGHT_KG</label>
+            <input type="number" id="req-weight" placeholder="Масса сырья">
+        </div>
+        <button class="main-btn" onclick="sendOrder()">EXECUTE_DATABASE_WRITE</button>
+        <div id="order-status" style="margin-top: 30px; font-family: var(--font-tech); text-align: center; font-size: 12px;"></div>
+    </div>
+
+    <!-- ПАНЕЛЬ: АВТОРИЗАЦИЯ -->
+    <div id="auth-panel" class="side-panel">
+        <div class="panel-close" onclick="closePanel('auth-panel')"><i class="fas fa-times"></i></div>
+        <h2 id="auth-title" style="font-family: var(--font-strict); font-size: 32px; margin-bottom: 40px; color: var(--blue);">SYSTEM_LOGIN</h2>
+        <div class="input-group">
+            <label>EMAIL_PROTOCOL</label>
+            <input type="email" id="auth-email" placeholder="example@gtrash.pro">
+        </div>
+        <div class="input-group">
+            <label>SECURITY_HASH</label>
+            <input type="password" id="auth-pass" placeholder="••••••••">
+        </div>
+        <div id="reg-fields" style="display: none;">
+            <div class="input-group">
+                <label>FULL_USER_NAME</label>
+                <input type="text" id="auth-name" placeholder="Иван Иванов">
+            </div>
+        </div>
+        <button class="main-btn" style="background: var(--blue); color: #000;" id="auth-exec-btn" onclick="handleAuth()">ENTER_SYSTEM</button>
+        <p style="margin-top: 30px; text-align: center; font-size: 12px; color: var(--slate); cursor: pointer;" onclick="toggleRegMode()" id="reg-toggle-text">Зарегистрировать новый узел системы</p>
+    </div>
+
+    <!-- ПАНЕЛЬ: ПРОФИЛЬ (ЛК) -->
+    <div id="user-panel" class="side-panel">
+        <div class="panel-close" onclick="closePanel('user-panel')"><i class="fas fa-times"></i></div>
+        <h2 style="font-family: var(--font-strict); font-size: 32px; margin-bottom: 10px;">USER_PROFILE</h2>
+        <p id="profile-email" style="color: var(--slate); font-size: 12px; margin-bottom: 40px; font-family: var(--font-tech);">...</p>
+        
+        <div class="user-stat-row">
+            <div class="user-stat-card">
+                <p style="font-size: 10px; color: var(--slate);">ECO_POINTS</p>
+                <h4 id="profile-points">0</h4>
+            </div>
+            <div class="user-stat-card">
+                <p style="font-size: 10px; color: var(--slate);">RANK</p>
+                <h4 style="font-size: 14px; color: var(--blue);">ACTIVATE</h4>
+            </div>
+        </div>
+
+        <h3 style="font-family: var(--font-strict); font-size: 18px; margin-bottom: 20px;">TRANSACTION_HISTORY</h3>
+        <div id="profile-history">Загрузка данных из PostgreSQL...</div>
+        
+        <button onclick="logout()" class="main-btn" style="background: none; border: 1px solid #444; color: #666; margin-top: 50px;">TERMINATE_SESSION</button>
+    </div>
+
+    <!-- JAVASCRIPT: СИСТЕМНАЯ ЛОГИКА -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        /**
+         * G-TRASH CORE ENGINE v35.0
+         * Интеграция с API Render и БД Supabase PostgreSQL
+         */
+        const API_URL = "https://ecology-project-do42.onrender.com";
+        let user = JSON.parse(localStorage.getItem('gt_v35_session')) || null;
+        let regMode = false;
+
+        // ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
+        window.onload = () => {
+            // Убираем лоадер
+            setTimeout(() => { document.getElementById('loader').style.display = 'none'; }, 1000);
             
-            <!-- Вопрос 3 -->
-            <div class="faq-item" style="border-bottom: 1px solid var(--glass-border); padding: 25px 0;" onclick="toggleFaq(this)">
-                <div style="display: flex; justify-content: space-between; font-weight: 800; cursor: pointer;">
-                    <span>Куда уходят вырученные средства?</span>
-                    <i class="fas fa-plus"></i>
-                </div>
-                <div class="faq-answer" style="display: none; padding-top: 20px; color: var(--slate); font-size: 14px;">
-                    60% прибыли реинвестируется в расширение сети умных боксов. 30% идет на выплату бонусов пользователям. 10% направляется в фонд защиты лесов Сибири.
-                </div>
-            </div>
-            <!-- Добавь еще 10 таких блоков, чтобы FAQ выглядел как настоящая база знаний -->
-        </div>
-    </section>
-
-    <!-- СЕКЦИЯ: СОЦИАЛЬНАЯ СТЕНА (СТИЛЬ TG-КАНАЛА) -->
-    <section id="social-wall" style="background: #0b1120;">
-        <div class="section-header" style="text-align: center;">
-            <p>// COMMUNITY_VOICE</p>
-            <h2>Отзывы Активистов</h2>
-        </div>
-        <div class="social-grid" style="display: flex; gap: 20px; overflow-x: auto; padding: 40px 0;">
-            <!-- Пакет отзывов -->
-            <div class="social-card" style="min-width: 300px; background: #1e293b; padding: 25px; border-radius: 20px; position: relative;">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                    <img src="https://i.pravatar.cc/50?u=a" style="border-radius: 50%;">
-                    <div><b style="font-size: 14px;">@eco_warrior</b><br><span style="font-size: 10px; color: var(--blue);">v10.0 User</span></div>
-                </div>
-                <p style="font-size: 13px; color: var(--slate);">«Лучший сервис! Сдала макулатуру — начислили баллы за 2 минуты. Карта работает идеально!»</p>
-                <i class="fab fa-telegram" style="position: absolute; top: 20px; right: 20px; opacity: 0.2;"></i>
-            </div>
-
-            <div class="social-card" style="min-width: 300px; background: #1e293b; padding: 25px; border-radius: 20px; position: relative;">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                    <img src="https://i.pravatar.cc/50?u=b" style="border-radius: 50%;">
-                    <div><b style="font-size: 14px;">@green_it_guy</b><br><span style="font-size: 10px; color: var(--blue);">Tech Lead</span></div>
-                </div>
-                <p style="font-size: 13px; color: var(--slate);">«Посмотрел логи через API — всё очень прозрачно. Данные в Supabase летят без задержек. Уважаю за такой стек!»</p>
-                <i class="fab fa-telegram" style="position: absolute; top: 20px; right: 20px; opacity: 0.2;"></i>
-            </div>
+            initMap();
+            loadGlobalStats();
+            if(user) syncUserInterface();
+            initRevealAnimation();
             
-            <div class="social-card" style="min-width: 300px; background: #1e293b; padding: 25px; border-radius: 20px; position: relative;">
-                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                    <img src="https://i.pravatar.cc/50?u=c" style="border-radius: 50%;">
-                    <div><b style="font-size: 14px;">@mama_mira</b><br><span style="font-size: 10px; color: var(--blue);">Active User</span></div>
-                </div>
-                <p style="font-size: 13px; color: var(--slate);">«Приучаю детей к сортировке через это приложение. Им очень нравится видеть, как растут цифры статистики.»</p>
-                <i class="fab fa-telegram" style="position: absolute; top: 20px; right: 20px; opacity: 0.2;"></i>
-            </div>
-            <!-- Продублируй еще 10 таких карточек, чтобы можно было долго листать вбок -->
-        </div>
-    </section>
+            // Липкое меню
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if (window.scrollY > 100) nav.classList.add('scrolled');
+                else nav.classList.remove('scrolled');
+            });
+        };
 
-    <!-- СЕКЦИЯ: ПАРТНЕРЫ -->
-    <section id="partners" style="padding: 60px 10%; background: #05070a; text-align: center;">
-        <p style="font-size: 12px; color: var(--slate); letter-spacing: 5px; margin-bottom: 40px;">// STRATEGIC_PARTNERS</p>
-        <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap; gap: 40px; opacity: 0.4;">
-            <i class="fab fa-google fa-2x"></i>
-            <i class="fab fa-amazon fa-2x"></i>
-            <i class="fab fa-apple fa-2x"></i>
-            <i class="fab fa-microsoft fa-2x"></i>
-            <i class="fab fa-tesla fa-2x"></i>
-        </div>
-    </section>
+        function initMap() {
+            const map = L.map('map').setView([55.751244, 37.618423], 4);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/dark_all/{z}/{x}/{y}.png').addTo(map);
+            const hubs = [
+                {loc: [55.75, 37.61], name: "MOSCOW_HUB_PRIMARY"},
+                {loc: [59.93, 30.33], name: "SPB_NODE_02"},
+                {loc: [45.03, 38.97], name: "KASNODAR_ECO_STATION"}
+            ];
+            hubs.forEach(h => L.marker(h.loc).addTo(map).bindPopup(`<b>${h.name}</b><br>Статус: ONLINE`));
+        }
+
+        async function loadGlobalStats() {
+            try {
+                const r = await fetch(`${API_URL}/api/stats/global`);
+                const d = await r.json();
+                document.getElementById('global-kg').innerText = Math.floor(d.total_kg).toLocaleString();
+                document.getElementById('global-orders').innerText = d.orders_count;
+                document.getElementById('global-users').innerText = d.eco_heroes;
+            } catch (e) { console.error("Stats_Sync_Error"); }
+        }
+
+        // УПРАВЛЕНИЕ ПАНЕЛЯМИ
+        function openPanel(id) { document.getElementById(id).classList.add('active'); }
+        function closePanel(id) { document.getElementById(id).classList.remove('active'); }
+
+        function toggleRegMode() {
+            regMode = !regMode;
+            document.getElementById('auth-title').innerText = regMode ? "NEW_ACCOUNT_REG" : "SYSTEM_LOGIN";
+            document.getElementById('reg-fields').style.display = regMode ? "block" : "none";
+            document.getElementById('auth-exec-btn').innerText = regMode ? "CREATE_NODE" : "ENTER_SYSTEM";
+            document.getElementById('reg-toggle-text').innerText = regMode ? "Уже есть ключ доступа? Войти" : "Зарегистрировать новый узел системы";
+        }
+
+        async function handleAuth() {
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-pass').value;
+            const name = document.getElementById('auth-name').value;
+            const path = regMode ? "/api/auth/register" : "/api/auth/login";
+            const payload = regMode ? {full_name: name, email, password: pass} : {email, password: pass};
+
+            try {
+                const res = await fetch(API_URL + path, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if(res.ok) {
+                    if(regMode) { alert("УСПЕХ: Узел зарегистрирован. Теперь войдите."); toggleRegMode(); }
+                    else { localStorage.setItem('gt_v35_session', JSON.stringify(data)); location.reload(); }
+                } else { alert(data.detail); }
+            } catch (e) { alert("ОШИБКА: Сервер недоступен."); }
+        }
+
+        function syncUserInterface() {
+            document.getElementById('auth-nav-link').style.display = 'none';
+            document.getElementById('user-nav-link').style.display = 'block';
+            document.getElementById('user-display-name').innerText = user.full_name;
+            document.getElementById('profile-email').innerText = user.email;
+            document.getElementById('profile-points').innerText = user.points || 0;
+            loadPersonalHistory();
+        }
+
+        async function loadPersonalHistory() {
+            const res = await fetch(`${API_URL}/api/orders/my/${user.id}`);
+            const data = await res.json();
+            const list = document.getElementById('profile-history');
+            if(data.length === 0) list.innerHTML = "<p style='color: #444;'>Протоколы транзакций отсутствуют.</p>";
+            else {
+                list.innerHTML = data.map(o => `
+                    <div class="history-item">
+                        <div><b>${o.waste_type}</b><br><small>${new Date(o.order_date).toLocaleDateString()}</small></div>
+                        <div style="font-weight: 900; color: var(--mint);">+ ${o.weight_kg} KG</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function sendOrder() {
+            const name = document.getElementById('req-name').value;
+            const type = document.getElementById('req-type').value;
+            const weight = document.getElementById('req-weight').value;
+            const status = document.getElementById('order-status');
+
+            if(!name || !weight) { alert("ДАННЫЕ НЕПОЛНЫ!"); return; }
+            status.innerText = ">>> TRANSMITTING_TO_SUPABASE...";
+            status.style.color = "var(--blue)";
+
+            try {
+                const res = await fetch(`${API_URL}/api/orders/create`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        client_name: name, waste_type: type, 
+                        weight_kg: parseFloat(weight), user_id: user ? user.id : null
+                    })
+                });
+                if(res.ok) {
+                    status.innerText = ">>> SUCCESS: DATABASE_SYNCHRONIZED";
+                    status.style.color = "var(--mint)";
+                    loadGlobalStats();
+                    if(user) { 
+                        loadPersonalHistory();
+                        // Имитация обновления баллов без перезагрузки
+                        document.getElementById('profile-points').innerText = parseInt(document.getElementById('profile-points').innerText) + (weight * 10);
+                    }
+                }
+            } catch (e) { status.innerText = ">>> FAILED: CONNECTION_TIMEOUT"; status.style.color = "red"; }
+        }
+
+        function toggleFaq(el) {
+            const ans = el.querySelector('.faq-answer');
+            ans.style.display = ans.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function initRevealAnimation() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        function logout() { localStorage.removeItem('gt_v35_session'); location.reload(); }
+    </script>
+</body>
+</html>
