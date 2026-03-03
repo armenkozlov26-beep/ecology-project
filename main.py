@@ -1,13 +1,45 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-import psycopg2
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
 import os
+import datetime
+from typing import List, Optional
+from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, Session, relationship
+
+# Настройка БД
+DATABASE_URL = os.getenv("DATABASE_URL")
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+# --- МОДЕЛИ БД ---
+
+class UserDB(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String, unique=True, index=True)
+    password = Column(String) # В реальном проекте тут должен быть хеш
+    full_name = Column(String)
+    orders = relationship("OrderDB", back_populates="owner")
+
+class OrderDB(Base):
+    __tablename__ = "orders"
+    id = Column(Integer, primary_key=True, index=True)
+    client_name = Column(String(100))
+    waste_type = Column(String) 
+    weight_kg = Column(Float)
+    order_date = Column(DateTime, default=datetime.datetime.utcnow)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    
+    owner = relationship("UserDB", back_populates="orders")
+
+# Создание таблиц
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Разрешаем сайту (index.html) общаться с сервером
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,32 +47,66 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ССЫЛКА НА ОБЛАЧНУЮ БАЗУ SUPABASE (Пароль обновлен)
-DATABASE_URL = "postgresql://postgres:59h+z!geG9-7E_r@db.kylnesalchqnmhqadluh.supabase.co:5432/postgres"
+# --- СХЕМЫ ДАННЫХ ---
 
-class Order(BaseModel):
+class UserReg(BaseModel):
+    email: str
+    password: str
+    full_name: str
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
+
+class OrderCreate(BaseModel):
     client_name: str
-    weight: float
+    waste_type: str
+    weight_kg: float
+    user_id: Optional[int] = None
+
+# --- ЭНДПОИНТЫ ---
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.post("/register")
+def register(user: UserReg, db: Session = Depends(get_db)):
+    db_user = UserDB(email=user.email, password=user.password, full_name=user.full_name)
+    db.add(db_user)
+    try:
+        db.commit()
+        return {"status": "success"}
+    except:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Email уже занят")
+
+@app.post("/login")
+def login(user: UserLogin, db: Session = Depends(get_db)):
+    db_user = db.query(UserDB).filter(UserDB.email == user.email, UserDB.password == user.password).first()
+    if not db_user:
+        raise HTTPException(status_code=400, detail="Неверный логин или пароль")
+    return {"id": db_user.id, "full_name": db_user.full_name, "email": db_user.email}
 
 @app.post("/send")
-def add_order(order: Order):
-    try:
-        # Подключение к Supabase
-        conn = psycopg2.connect(DATABASE_URL)
-        cur = conn.cursor()
-        # Запись в таблицу, которую ты создал через SQL Editor
-        cur.execute(
-            "INSERT INTO orders (client_name, weight_kg) VALUES (%s, %s)",
-            (order.client_name, order.weight)
-        )
-        conn.commit()
-        cur.close()
-        conn.close()
-        return {"status": "success", "message": "Заявка сохранена в облаке Supabase!"}
-    except Exception as e:
-        return {"status": "error", "details": str(e)}
+async def create_order(order: OrderCreate, db: Session = Depends(get_db)):
+    new_order = OrderDB(
+        client_name=order.client_name,
+        waste_type=order.waste_type,
+        weight_kg=order.weight_kg,
+        user_id=order.user_id
+    )
+    db.add(new_order)
+    db.commit()
+    return {"status": "success"}
 
-if __name__ == "__main__":
-    # Настройка порта для работы на хостинге Render
-    port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+@app.get("/my-orders/{user_id}")
+def get_orders(user_id: int, db: Session = Depends(get_db)):
+    return db.query(OrderDB).filter(OrderDB.user_id == user_id).all()
+
+@app.get("/")
+def home():
+    return {"status": "G-TRASH API 3.0 ACTIVE"}
