@@ -1,10 +1,12 @@
 """
-G-TRASH BACKEND SYSTEM v4.0
-Developed for Diploma Project
-Author: Eco-Portal Team
+================================================================================
+G-TRASH BACKEND SYSTEM v6.0 - PROFESSIONAL EDITION
+DEVELOPED FOR DIPLOMA PROJECT: "INTELLIGENT WASTE MANAGEMENT ECOSYSTEM"
+================================================================================
 """
 import os
 import datetime
+import logging
 from typing import List, Optional
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,23 +15,23 @@ from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Tex
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session, relationship
 
-# Конфигурация базы данных
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    # Заглушка для локальной разработки, если переменная окружения не задана
-    DATABASE_URL = "postgresql://user:password@localhost/dbname"
+# Логирование для отладки
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("G-TRASH-CORE")
 
+# Конфигурация БД из переменных окружения
+DATABASE_URL = os.getenv("DATABASE_URL")
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# --- МОДЕЛИ ДАННЫХ (ORM) ---
+# --- МОДЕЛИ БАЗЫ ДАННЫХ ---
 
 class UserDB(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
-    email = Column(String(255), unique=True, index=True, nullable=False)
-    password = Column(String(255), nullable=False)
+    email = Column(String(255), unique=True, index=True)
+    password = Column(String(255))
     full_name = Column(String(255))
     created_at = Column(DateTime, default=datetime.datetime.utcnow)
     orders = relationship("OrderDB", back_populates="owner")
@@ -38,26 +40,19 @@ class OrderDB(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True, index=True)
     client_name = Column(String(100))
-    waste_type = Column(String(50))
+    waste_type = Column(String(100))
     weight_kg = Column(Float)
     status = Column(String(50), default="В обработке")
     order_date = Column(DateTime, default=datetime.datetime.utcnow)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     owner = relationship("UserDB", back_populates="orders")
 
-class FeedbackDB(Base):
-    __tablename__ = "feedback"
-    id = Column(Integer, primary_key=True, index=True)
-    user_name = Column(String(100))
-    message = Column(Text)
-    created_at = Column(DateTime, default=datetime.datetime.utcnow)
-
-# Создание таблиц при запуске
+# Создание таблиц
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="G-TRASH Professional API", version="4.0.0")
+# Инициализация FastAPI
+app = FastAPI(title="G-TRASH CORE API", version="6.0.0")
 
-# Настройка CORS для работы с фронтендом
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -66,66 +61,50 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- ВАЛИДАЦИЯ (Pydantic) ---
-
+# --- ВАЛИДАЦИЯ ---
 class OrderCreate(BaseModel):
     client_name: str
     waste_type: str
     weight_kg: float
     user_id: Optional[int] = None
 
-class UserRegister(BaseModel):
+class UserAuth(BaseModel):
     email: EmailStr
     password: str
+
+class UserReg(UserAuth):
     full_name: str
-
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
-
-# --- ЛОГИКА (Endpoints) ---
 
 def get_db():
     db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    try: yield db
+    finally: db.close()
+
+# --- ЭНДПОИНТЫ ---
 
 @app.get("/")
 def read_root():
-    return {
-        "project": "G-TRASH ECO",
-        "status": "Online",
-        "timestamp": datetime.datetime.utcnow(),
-        "db_connected": True
-    }
+    return {"status": "G-TRASH v6.0 API ACTIVE", "db": "CONNECTED"}
 
 @app.post("/api/register")
-def register_user(user: UserRegister, db: Session = Depends(get_db)):
+def register(user: UserReg, db: Session = Depends(get_db)):
     db_user = db.query(UserDB).filter(UserDB.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email уже зарегистрирован")
-    
     new_user = UserDB(email=user.email, password=user.password, full_name=user.full_name)
     db.add(new_user)
     db.commit()
-    db.refresh(new_user)
-    return {"message": "Успешная регистрация", "user_id": new_user.id}
+    return {"status": "success", "id": new_user.id}
 
 @app.post("/api/login")
-def login_user(user: UserLogin, db: Session = Depends(get_db)):
+def login(user: UserAuth, db: Session = Depends(get_db)):
     db_user = db.query(UserDB).filter(UserDB.email == user.email, UserDB.password == user.password).first()
     if not db_user:
         raise HTTPException(status_code=401, detail="Неверные учетные данные")
-    return {
-        "id": db_user.id,
-        "full_name": db_user.full_name,
-        "email": db_user.email
-    }
+    return {"id": db_user.id, "full_name": db_user.full_name, "email": db_user.email}
 
 @app.post("/api/orders")
-def create_order(order: OrderCreate, db: Session = Depends(get_db)):
+async def create_order(order: OrderCreate, db: Session = Depends(get_db)):
     try:
         new_order = OrderDB(
             client_name=order.client_name,
@@ -135,23 +114,22 @@ def create_order(order: OrderCreate, db: Session = Depends(get_db)):
         )
         db.add(new_order)
         db.commit()
-        return {"status": "success", "order_id": new_order.id}
+        return {"status": "success"}
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/my-orders/{user_id}")
-def get_user_orders(user_id: int, db: Session = Depends(get_db)):
-    orders = db.query(OrderDB).filter(OrderDB.user_id == user_id).order_by(OrderDB.order_date.desc()).all()
-    return orders
+def get_history(user_id: int, db: Session = Depends(get_db)):
+    return db.query(OrderDB).filter(OrderDB.user_id == user_id).order_by(OrderDB.order_date.desc()).all()
 
 @app.get("/api/stats")
-def get_global_stats(db: Session = Depends(get_db)):
-    total_weight = db.query(OrderDB).with_entities(Float(OrderDB.weight_kg)).all()
-    count = db.query(OrderDB).count()
+def get_stats(db: Session = Depends(get_db)):
+    total_w = db.query(OrderDB).with_entities(OrderDB.weight_kg).all()
     return {
-        "total_kg": sum([w[0] for w in total_weight if w[0]]),
-        "total_orders": count,
-        "active_users": db.query(UserDB).count()
+        "total_kg": sum([x[0] for x in total_w if x[0]]),
+        "count": len(total_w),
+        "users": db.query(UserDB).count()
     }
+
 
